@@ -2,6 +2,7 @@ import React, { useState, useRef, useMemo } from "react";
 import bengalLogo from "./assets/Bengal.svg";
 import usaMapData from "@svg-maps/usa";
 import congDist from "./assets/ms_cvap_2020_cd.json";
+import copyGeo from "./assets/copyGeo.json";
 import { MapContainer, GeoJSON } from "react-leaflet";
 import {
   BarChart,
@@ -17,6 +18,9 @@ import {
   ComposedChart,
   LineChart,
   Line,
+  PieChart,
+  Pie,
+  Sector,
 } from "recharts";
 
 import {
@@ -28,49 +32,73 @@ import {
   Button,
   Alert,
   Table,
+  Form,
 } from "react-bootstrap";
 const boxPlots1 = [
   {
-    min: 0,
-    lowerQuartile: 0.3,
-    median: 0.2,
-    upperQuartile: 0.8,
-    max: 1,
-    average: 0.6,
-  },
-  {
-    min: 0,
-    lowerQuartile: 0.3,
-    median: 0.1,
-    upperQuartile: 0.8,
-    max: 1,
-    average: 0.5,
-  },
-  {
-    min: 0,
-    lowerQuartile: 0.3,
-    median: 0.8,
-    upperQuartile: 0.8,
-    max: 1,
-    average: 0.4,
-  },
-  {
-    min: 0,
+    name: "District 1",
+    min: 0.05,
     lowerQuartile: 0.2,
-    median: 0.3,
-    upperQuartile: 0.84,
-    max: 1,
-    average: 0.3,
+    median: 0.35,
+    upperQuartile: 0.5,
+    max: 0.65,
+    average: 0.35,
+  },
+  {
+    name: "District 2",
+    min: 0.1,
+    lowerQuartile: 0.25,
+    median: 0.45,
+    upperQuartile: 0.6,
+    max: 0.75,
+    average: 0.43,
+  },
+  {
+    name: "District 3",
+    min: 0.12,
+    lowerQuartile: 0.3,
+    median: 0.5,
+    upperQuartile: 0.7,
+    max: 0.85,
+    average: 0.49,
+  },
+  {
+    name: "District 4",
+    min: 0.2,
+    lowerQuartile: 0.35,
+    median: 0.55,
+    upperQuartile: 0.75,
+    max: 0.9,
+    average: 0.55,
   },
 ];
 const boxPlots2 = [
   {
+    name: "District 1",
     min: 0,
     lowerQuartile: 0.3,
     median: 0.2,
     upperQuartile: 0.8,
     max: 1,
     average: 0.6,
+  },
+];
+const data_curve1 = [
+  {
+    Republicans: 0,
+    Democrats: 0,
+  },
+  {
+    Republicans: 0.5,
+    Democrats: 0.4,
+  },
+  {
+    Republicans: 0.5,
+    Democrats: 0.4,
+  },
+  {
+    Republicans: 1,
+    Democrats: 1,
   },
 ];
 
@@ -114,6 +142,7 @@ const useBoxPlot = (boxPlots) => {
     () =>
       boxPlots.map((v) => {
         return {
+          name: v.name,
           min: v.min,
           bottomWhisker: v.lowerQuartile - v.min,
           bottomBox: v.median - v.lowerQuartile,
@@ -128,17 +157,11 @@ const useBoxPlot = (boxPlots) => {
 
   return data;
 };
-const data_curve = [
-  {
-    Republicans: 0,
-    Democrats: 0,
-  },
-  {
-    Republicans: 1,
-    Democrats: 1,
-  },
-];
 function Home() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const onPieEnter = (_, index) => {
+    setActiveIndex(index);
+  };
   const [selectedState, setSelectedState] = useState("SELECT A STATE");
   const [selectedDistrictPop_SMD, setselectedDistrictPop_SMD] = useState([
     congDist.features[0]["properties"]["vap"],
@@ -150,14 +173,87 @@ function Home() {
     0,
   ]); // [population, White, Asian, Black, Hispanic, Democratic, Republican]
   const [selectedDistrictPop_MMD, setselectedDistrictPop_MMD] = useState([
-    congDist.features[0]["properties"]["vap"],
-    congDist.features[0]["properties"]["vap_white"],
-    congDist.features[0]["properties"]["vap_asian"],
-    congDist.features[0]["properties"]["vap_black"],
-    congDist.features[0]["properties"]["vap_hisp"],
+    copyGeo.features[0]["properties"]["vap"],
+    copyGeo.features[0]["properties"]["vap_white"],
+    copyGeo.features[0]["properties"]["vap_asian"],
+    copyGeo.features[0]["properties"]["vap_black"],
+    copyGeo.features[0]["properties"]["vap_hisp"],
     0,
     0,
   ]);
+  const [onPieChart, setOnPieChart] = useState(false);
+  const renderActiveShape = (props) => {
+    const RADIAN = Math.PI / 180;
+    const {
+      cx,
+      cy,
+      midAngle,
+      innerRadius,
+      outerRadius,
+      startAngle,
+      endAngle,
+      fill,
+      payload,
+      percent,
+      value,
+    } = props;
+    const sin = Math.sin(-RADIAN * midAngle);
+    const cos = Math.cos(-RADIAN * midAngle);
+    const sx = cx + (outerRadius + 10) * cos;
+    const sy = cy + (outerRadius + 10) * sin;
+    const mx = cx + (outerRadius + 30) * cos;
+    const my = cy + (outerRadius + 30) * sin;
+    const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+    const ey = my;
+    const textAnchor = cos >= 0 ? "start" : "end";
+
+    return (
+      <g>
+        <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
+          {payload.name}
+        </text>
+        <Sector
+          cx={cx}
+          cy={cy}
+          innerRadius={innerRadius}
+          outerRadius={outerRadius}
+          startAngle={startAngle}
+          endAngle={endAngle}
+          fill={fill}
+        />
+        <Sector
+          cx={cx}
+          cy={cy}
+          startAngle={startAngle}
+          endAngle={endAngle}
+          innerRadius={outerRadius + 6}
+          outerRadius={outerRadius + 10}
+          fill={fill}
+        />
+        <path
+          d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
+          stroke={fill}
+          fill="none"
+        />
+        <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
+        <text
+          x={ex + (cos >= 0 ? 1 : -1) * 12}
+          y={ey}
+          textAnchor={textAnchor}
+          fill="#333"
+        >{`${(percent * 100).toFixed(2)}%`}</text>
+        <text
+          x={ex + (cos >= 0 ? 1 : -1) * 12}
+          y={ey}
+          dy={18}
+          textAnchor={textAnchor}
+          fill="#999"
+        >
+          {`(${value})`}
+        </text>
+      </g>
+    );
+  };
   const [selectedDistrictSMD, setSelectedDistrictSMD] = useState(null);
   const [selectedDistrictMMD, setSelectedDistrictMMD] = useState(null);
   const [hoveredLocation, setHoveredLocation] = useState(null);
@@ -165,7 +261,7 @@ function Home() {
   const [showBelowStateSelection, setShowBelowStateSelection] = useState(true);
   const [showInfo1, setShowInfo1] = useState(false);
   const [showInfo2, setShowInfo2] = useState(false);
-  const [showFairness, setShowFairness] = useState([true, false]); // Minority, Political Party
+  const [showPoliticalFairness, setShowPoliticalFairness] = useState(false); // Minority, Political Party
   const [coordinate, setCoordinate] = useState([32.3547, -90.0]);
   const data_boxPlot = [useBoxPlot(boxPlots1), useBoxPlot(boxPlots2)];
   const formatXAxisTick = (tick) => {
@@ -209,7 +305,7 @@ function Home() {
       fillOpacity: 1,
     });
   };
-  const onEachDistrict_SMD = (district, layer) => {
+  const onEachDistrict_SMD = (district, layer, index) => {
     const onMouseOver = (e) => {
       layer.setStyle({
         fillColor: "rgb(40, 38, 38)",
@@ -238,7 +334,15 @@ function Home() {
       //   fillColor: "blue",
       // });
     };
-
+    const onAdd = (e) => {
+      const label = L.divIcon({
+        className: "district-label",
+        html: `<div style="font-size: 20px; color: black;">${index + 1}</div>`,
+      });
+      L.marker(layer.getBounds().getCenter(), { icon: label }).addTo(
+        layer._map
+      );
+    };
     layer.setStyle({
       color: "rgba(241, 243, 243, 1)",
       fillColor: "rgb(220, 25, 10)",
@@ -247,9 +351,10 @@ function Home() {
       mouseout: onMouseOut,
       mouseover: onMouseOver,
       click: onClick,
+      add: onAdd,
     });
   };
-  const onEachDistrict_MMD = (district, layer) => {
+  const onEachDistrict_MMD = (district, layer, index) => {
     const onMouseOver = (e) => {
       layer.setStyle({
         weight: 4,
@@ -275,12 +380,16 @@ function Home() {
         0,
         0,
       ]);
-      // layer.setStyle({
-      //   weight: 3,
-      //   fillColor: "blue",
-      // });
     };
-
+    const onAdd = (e) => {
+      const label = L.divIcon({
+        className: "district-label",
+        html: `<div style="font-size: 20px; color: black;">${index + 1}</div>`,
+      });
+      L.marker(layer.getBounds().getCenter(), { icon: label }).addTo(
+        layer._map
+      );
+    };
     layer.setStyle({
       color: "rgba(241, 243, 243, 1)",
       fillColor: "rgb(220, 25, 10)",
@@ -289,6 +398,7 @@ function Home() {
       mouseout: onMouseOut,
       mouseover: onMouseOver,
       click: onClick,
+      add: onAdd,
     });
   };
 
@@ -489,7 +599,7 @@ function Home() {
                   <Nav.Link
                     eventKey="link-1"
                     className="text_navElement_fairness"
-                    onClick={() => setShowFairness([true, false])}
+                    onClick={() => setShowPoliticalFairness(false)}
                     ref={minorityFairnessRef}
                   >
                     Minority Fairness
@@ -499,14 +609,14 @@ function Home() {
                   <Nav.Link
                     eventKey="link-2"
                     className="text_navElement_fairness"
-                    onClick={() => setShowFairness([false, true])}
+                    onClick={() => setShowPoliticalFairness(true)}
                     ref={politicalFairnessRef}
                   >
                     Political Fairness
                   </Nav.Link>
                 </Nav.Item>
               </Nav>
-              {showFairness[0] && (
+              {!showPoliticalFairness && (
                 <div className="analysis1">
                   <h2 className="text_subQuestion1_1">
                     WILL FAIR REPRESENTATION ACT(FRA) for MMD
@@ -578,7 +688,13 @@ function Home() {
                               >
                                 <GeoJSON
                                   data={congDist.features}
-                                  onEachFeature={onEachDistrict_SMD}
+                                  onEachFeature={(district, layer) =>
+                                    onEachDistrict_SMD(
+                                      district,
+                                      layer,
+                                      congDist.features.indexOf(district)
+                                    )
+                                  }
                                 ></GeoJSON>
                               </MapContainer>
                             </Container>
@@ -594,114 +710,205 @@ function Home() {
                                 className="map_district"
                               >
                                 <GeoJSON
-                                  data={congDist.features}
-                                  onEachFeature={onEachDistrict_MMD}
+                                  data={copyGeo.features}
+                                  onEachFeature={(district, layer) =>
+                                    onEachDistrict_MMD(
+                                      district,
+                                      layer,
+                                      congDist.features.indexOf(district)
+                                    )
+                                  }
                                 ></GeoJSON>
                               </MapContainer>
                             </Container>
                           </td>
                         </tr>
                         <tr>
-                          <td className="table_0">Bar Chart</td>
+                          <td className="table_0">
+                            Population Chart
+                            <Form>
+                              <Form.Check
+                                type="switch"
+                                id="custom-switch"
+                                onChange={() => setOnPieChart(!onPieChart)}
+                              />
+                            </Form>
+                          </td>
                           <td>
-                            {" "}
                             <div style={{ width: "100%", height: 300 }}>
                               <ResponsiveContainer width="100%" height="100%">
-                                <BarChart
-                                  width={500}
-                                  height={300}
-                                  data={[
-                                    {
-                                      name: "White",
-                                      White: selectedDistrictPop_SMD[1],
-                                    },
-                                    {
-                                      name: "Non-White",
-                                      Aisan: selectedDistrictPop_SMD[2],
-                                      Black: selectedDistrictPop_SMD[3],
-                                      Hispanic: selectedDistrictPop_SMD[4],
-                                    },
-                                  ]}
-                                  margin={{
-                                    top: 20,
-                                    right: 30,
-                                    left: 20,
-                                    bottom: 5,
-                                  }}
-                                >
-                                  <CartesianGrid strokeDasharray="3 3" />
-                                  <XAxis dataKey="name" />
-                                  <YAxis />
-                                  <Tooltip />
-                                  <Legend />
-                                  <Bar dataKey="Asian" stackId="a" fill="red" />
-                                  <Bar
-                                    dataKey="Black"
-                                    stackId="a"
-                                    fill="orange"
-                                  />
-                                  <Bar
-                                    dataKey="Hispanic"
-                                    stackId="a"
-                                    fill="green"
-                                  />
-                                  <Bar
-                                    dataKey="White"
-                                    stackId="a"
-                                    fill="blue"
-                                  />
-                                </BarChart>
+                                {!onPieChart && (
+                                  <BarChart
+                                    width={500}
+                                    height={300}
+                                    data={[
+                                      {
+                                        name: "White",
+                                        White: selectedDistrictPop_SMD[1],
+                                      },
+                                      {
+                                        name: "Non-White",
+                                        Aisan: selectedDistrictPop_SMD[2],
+                                        Black: selectedDistrictPop_SMD[3],
+                                        Hispanic: selectedDistrictPop_SMD[4],
+                                      },
+                                    ]}
+                                    margin={{
+                                      top: 20,
+                                      right: 30,
+                                      left: 20,
+                                      bottom: 5,
+                                    }}
+                                  >
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Bar
+                                      dataKey="Asian"
+                                      stackId="a"
+                                      fill="red"
+                                    />
+                                    <Bar
+                                      dataKey="Black"
+                                      stackId="a"
+                                      fill="orange"
+                                    />
+                                    <Bar
+                                      dataKey="Hispanic"
+                                      stackId="a"
+                                      fill="green"
+                                    />
+                                    <Bar
+                                      dataKey="White"
+                                      stackId="a"
+                                      fill="blue"
+                                    />
+                                  </BarChart>
+                                )}
+                                {onPieChart && (
+                                  <PieChart width={100} height={100}>
+                                    <Pie
+                                      activeIndex={activeIndex}
+                                      activeShape={renderActiveShape}
+                                      data={[
+                                        {
+                                          name: "White",
+                                          value: selectedDistrictPop_SMD[1],
+                                        },
+                                        {
+                                          name: "Asian",
+                                          value: selectedDistrictPop_SMD[2],
+                                        },
+                                        {
+                                          name: "Black",
+                                          value: selectedDistrictPop_SMD[3],
+                                        },
+                                        {
+                                          name: "Hispanic",
+                                          value: selectedDistrictPop_SMD[4],
+                                        },
+                                      ].sort((a, b) => b.value - a.value)}
+                                      cx="50%"
+                                      cy="50%"
+                                      innerRadius={60}
+                                      outerRadius={80}
+                                      fill="#8884d8"
+                                      dataKey="value"
+                                      onMouseEnter={onPieEnter}
+                                    />
+                                  </PieChart>
+                                )}
                               </ResponsiveContainer>
                             </div>
                           </td>
                           <td>
-                            {" "}
                             <div style={{ width: "100%", height: 300 }}>
                               <ResponsiveContainer width="100%" height="100%">
-                                <BarChart
-                                  width={500}
-                                  height={300}
-                                  data={[
-                                    {
-                                      name: "White",
-                                      White: selectedDistrictPop_MMD[1],
-                                    },
-                                    {
-                                      name: "Non-White",
-                                      Aisan: selectedDistrictPop_MMD[2],
-                                      Black: selectedDistrictPop_MMD[3],
-                                      Hispanic: selectedDistrictPop_MMD[4],
-                                    },
-                                  ]}
-                                  margin={{
-                                    top: 20,
-                                    right: 30,
-                                    left: 20,
-                                    bottom: 5,
-                                  }}
-                                >
-                                  <CartesianGrid strokeDasharray="3 3" />
-                                  <XAxis dataKey="name" />
-                                  <YAxis />
-                                  <Tooltip />
-                                  <Legend />
-                                  <Bar dataKey="Asian" stackId="a" fill="red" />
-                                  <Bar
-                                    dataKey="Black"
-                                    stackId="a"
-                                    fill="orange"
-                                  />
-                                  <Bar
-                                    dataKey="Hispanic"
-                                    stackId="a"
-                                    fill="green"
-                                  />
-                                  <Bar
-                                    dataKey="White"
-                                    stackId="a"
-                                    fill="blue"
-                                  />
-                                </BarChart>
+                                {!onPieChart && (
+                                  <BarChart
+                                    width={500}
+                                    height={300}
+                                    data={[
+                                      {
+                                        name: "White",
+                                        White: selectedDistrictPop_MMD[1],
+                                      },
+                                      {
+                                        name: "Non-White",
+                                        Aisan: selectedDistrictPop_MMD[2],
+                                        Black: selectedDistrictPop_MMD[3],
+                                        Hispanic: selectedDistrictPop_MMD[4],
+                                      },
+                                    ]}
+                                    margin={{
+                                      top: 20,
+                                      right: 30,
+                                      left: 20,
+                                      bottom: 5,
+                                    }}
+                                  >
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="name" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Legend />
+                                    <Bar
+                                      dataKey="Asian"
+                                      stackId="a"
+                                      fill="red"
+                                    />
+                                    <Bar
+                                      dataKey="Black"
+                                      stackId="a"
+                                      fill="orange"
+                                    />
+                                    <Bar
+                                      dataKey="Hispanic"
+                                      stackId="a"
+                                      fill="green"
+                                    />
+                                    <Bar
+                                      dataKey="White"
+                                      stackId="a"
+                                      fill="blue"
+                                    />
+                                  </BarChart>
+                                )}
+                                {onPieChart && (
+                                  <PieChart width={100} height={100}>
+                                    <Pie
+                                      activeIndex={activeIndex}
+                                      activeShape={renderActiveShape}
+                                      data={[
+                                        {
+                                          name: "White",
+                                          value: selectedDistrictPop_MMD[1],
+                                        },
+                                        {
+                                          name: "Asian",
+                                          value: selectedDistrictPop_MMD[2],
+                                        },
+                                        {
+                                          name: "Black",
+                                          value: selectedDistrictPop_MMD[3],
+                                        },
+                                        {
+                                          name: "Hispanic",
+                                          value: selectedDistrictPop_MMD[4],
+                                        },
+                                      ].sort((a, b) => b.value - a.value)}
+                                      cx="50%"
+                                      cy="50%"
+                                      innerRadius={60}
+                                      outerRadius={80}
+                                      fill="#8884d8"
+                                      dataKey="value"
+                                      onMouseEnter={onPieEnter}
+                                    />
+                                  </PieChart>
+                                )}
                               </ResponsiveContainer>
                             </div>
                           </td>
@@ -763,7 +970,7 @@ function Home() {
                                   fill={"red"}
                                   stroke={"#FFF"}
                                 />
-                                <XAxis />
+                                <XAxis dataKey="name" />
                                 <YAxis
                                   domain={[0, 1]}
                                   tickFormatter={formatYAxisTick}
@@ -826,7 +1033,7 @@ function Home() {
                                   fill={"red"}
                                   stroke={"#FFF"}
                                 />
-                                <XAxis />
+                                <XAxis dataKey="name" />
                                 <YAxis
                                   domain={[0, 1]}
                                   tickFormatter={formatYAxisTick}
@@ -840,7 +1047,7 @@ function Home() {
                   </div>
                 </div>
               )}
-              {showFairness[1] && (
+              {showPoliticalFairness && (
                 <div className="analysis2">
                   <h2 className="text_subQuestion1_1">
                     WILL FAIR REPRESENTATION ACT(FRA) for MMD
@@ -913,7 +1120,13 @@ function Home() {
                               >
                                 <GeoJSON
                                   data={congDist.features}
-                                  onEachFeature={onEachDistrict_SMD}
+                                  onEachFeature={(district, layer) =>
+                                    onEachDistrict_SMD(
+                                      district,
+                                      layer,
+                                      congDist.features.indexOf(district)
+                                    )
+                                  }
                                 ></GeoJSON>
                               </MapContainer>
                             </Container>
@@ -929,8 +1142,14 @@ function Home() {
                                 className="map_district"
                               >
                                 <GeoJSON
-                                  data={congDist.features}
-                                  onEachFeature={onEachDistrict_MMD}
+                                  data={copyGeo.features}
+                                  onEachFeature={(district, layer) =>
+                                    onEachDistrict_MMD(
+                                      district,
+                                      layer,
+                                      congDist.features.indexOf(district)
+                                    )
+                                  }
                                 ></GeoJSON>
                               </MapContainer>
                             </Container>
@@ -939,7 +1158,6 @@ function Home() {
                         <tr>
                           <td className="table_0">Bar Chart</td>
                           <td>
-                            {" "}
                             <div style={{ width: "100%", height: 300 }}>
                               <ResponsiveContainer width="100%" height="100%">
                                 <BarChart
@@ -984,7 +1202,6 @@ function Home() {
                             </div>
                           </td>
                           <td>
-                            {" "}
                             <div style={{ width: "100%", height: 300 }}>
                               <ResponsiveContainer width="100%" height="100%">
                                 <BarChart
@@ -1035,7 +1252,7 @@ function Home() {
                             <div style={{ width: "100%", height: 300 }}>
                               <ResponsiveContainer width="100%" height="100%">
                                 <LineChart
-                                  data={data_curve}
+                                  data={data_curve1}
                                   margin={{
                                     top: 5,
                                     right: 30,
@@ -1046,7 +1263,12 @@ function Home() {
                                   <CartesianGrid strokeDasharray="3 3" />
                                   <XAxis
                                     domain={[0, 1]}
-                                    tickFormatter={formatXAxisTick}
+                                    tickFormatter={(tick) => {
+                                      return `${(
+                                        (tick * 100) /
+                                        (data_curve1.length - 1)
+                                      ).toFixed(0)}%`;
+                                    }}
                                   />
                                   <YAxis
                                     domain={[0, 1]}
@@ -1073,7 +1295,16 @@ function Home() {
                             <div style={{ width: "100%", height: 300 }}>
                               <ResponsiveContainer width="100%" height="100%">
                                 <LineChart
-                                  data={data_curve}
+                                  data={[
+                                    {
+                                      Republicans: 0,
+                                      Democrats: 0,
+                                    },
+                                    {
+                                      Republicans: 1,
+                                      Democrats: 1,
+                                    },
+                                  ]}
                                   margin={{
                                     top: 5,
                                     right: 30,
