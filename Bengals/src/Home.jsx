@@ -141,7 +141,6 @@ import {
 //   return data;
 // };
 function Home() {
-  
   const [activeIndex, setActiveIndex] = useState(0);
   // const onPieEnter = (_, index) => {
   //   setActiveIndex(index);

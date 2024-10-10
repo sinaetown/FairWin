@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import axios from "axios";
 import { useParams } from "react-router-dom";
 import bengalLogo from "./assets/Bengal.svg";
-import usaMapData from "@svg-maps/usa";
-import congDist from "./assets/ms_cvap_2020_cd.json";
+import congDist from "./assets/blank.json";
 import copyGeo from "./assets/copyGeo.json";
 import { MapContainer, GeoJSON } from "react-leaflet";
 import {
@@ -19,17 +19,12 @@ import {
   ComposedChart,
   LineChart,
   Line,
-  PieChart,
-  Pie,
-  Sector,
 } from "recharts";
 import {
   Offcanvas,
   Nav,
   Navbar,
-  NavDropdown,
   Container,
-  Button,
   Alert,
   Table,
   Form,
@@ -85,7 +80,6 @@ const boxPlots2 = [
     average: 0.45,
   },
 ];
-
 const data_curve1 = [
   {
     Republicans: 0,
@@ -108,11 +102,9 @@ const data_curve1 = [
 // Horizontal Line
 const HorizonBar = (props) => {
   const { x, y, width, height } = props;
-
   if (x == null || y == null || width == null || height == null) {
     return null;
   }
-
   return (
     <line x1={x} y1={y} x2={x + width} y2={y} stroke={"#000"} strokeWidth={3} />
   );
@@ -125,7 +117,6 @@ const DotBar = (props) => {
   if (x == null || y == null || width == null || height == null) {
     return null;
   }
-
   return (
     <line
       x1={x + width / 2}
@@ -157,173 +148,143 @@ const useBoxPlot = (boxPlots) => {
       }),
     [boxPlots]
   );
-
   return data;
 };
-
 function Analysis() {
-  const [onMMD, setOnMMD] = useState(false);
+  const [geoJson, setGeoJson] = useState(congDist);
   const { id: selectedState } = useParams();
-  const [activeIndex, setActiveIndex] = useState(0);
-  const onPieEnter = (_, index) => {
-    setActiveIndex(index);
-  };
-  //   const [selectedState, setSelectedState] = useState("Mississipi");
-  // const [selectedDistrictPop_SMD, setselectedDistrictPop_SMD] = useState([
-  //   congDist.features[0]["properties"]["vap"],
-  //   congDist.features[0]["properties"]["vap_white"],
-  //   congDist.features[0]["properties"]["vap_asian"],
-  //   congDist.features[0]["properties"]["vap_black"],
-  //   congDist.features[0]["properties"]["vap_hisp"],
-  //   0,
-  //   0,
-  // ]); // [population, White, Asian, Black, Hispanic, Democratic, Republican]
-  // const [selectedDistrictPop_MMD, setselectedDistrictPop_MMD] = useState([
-  //   copyGeo.features[0]["properties"]["vap"],
-  //   copyGeo.features[0]["properties"]["vap_white"],
-  //   copyGeo.features[0]["properties"]["vap_asian"],
-  //   copyGeo.features[0]["properties"]["vap_black"],
-  //   copyGeo.features[0]["properties"]["vap_hisp"],
-  //   0,
-  //   0,
-  // ]);
-  const [onPieChart, setOnPieChart] = useState(false);
-  const renderActiveShape = (props) => {
-    const RADIAN = Math.PI / 180;
-    const {
-      cx,
-      cy,
-      midAngle,
-      innerRadius,
-      outerRadius,
-      startAngle,
-      endAngle,
-      fill,
-      payload,
-      percent,
-      value,
-    } = props;
-    const sin = Math.sin(-RADIAN * midAngle);
-    const cos = Math.cos(-RADIAN * midAngle);
-    const sx = cx + (outerRadius + 10) * cos;
-    const sy = cy + (outerRadius + 10) * sin;
-    const mx = cx + (outerRadius + 30) * cos;
-    const my = cy + (outerRadius + 30) * sin;
-    const ex = mx + (cos >= 0 ? 1 : -1) * 22;
-    const ey = my;
-    const textAnchor = cos >= 0 ? "start" : "end";
-
-    return (
-      <g>
-        <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
-          {payload.name}
-        </text>
-        <Sector
-          cx={cx}
-          cy={cy}
-          innerRadius={innerRadius}
-          outerRadius={outerRadius}
-          startAngle={startAngle}
-          endAngle={endAngle}
-          fill={fill}
-        />
-        <Sector
-          cx={cx}
-          cy={cy}
-          startAngle={startAngle}
-          endAngle={endAngle}
-          innerRadius={outerRadius + 6}
-          outerRadius={outerRadius + 10}
-          fill={fill}
-        />
-        <path
-          d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
-          stroke={fill}
-          fill="none"
-        />
-        <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-        <text
-          x={ex + (cos >= 0 ? 1 : -1) * 12}
-          y={ey}
-          textAnchor={textAnchor}
-          fill="#333"
-        >{`${(percent * 100).toFixed(2)}%`}</text>
-        <text
-          x={ex + (cos >= 0 ? 1 : -1) * 12}
-          y={ey}
-          dy={18}
-          textAnchor={textAnchor}
-          fill="#999"
-        >
-          {`(${value})`}
-        </text>
-      </g>
-    );
-  };
-  const [data_barchart_SMD, setData_barchart_SMD] = useState([]);
-  const [data_barchart_MMD, setData_barchart_MMD] = useState([]);
-  const [data_barchart_SMD2, setData_barchart_SMD2] = useState([]);
-  const [data_barchart_MMD2, setData_barchart_MMD2] = useState([]);
-  // const [selectedDistrictSMD, setSelectedDistrictSMD] = useState(null);
-  // const [selectedDistrictMMD, setSelectedDistrictMMD] = useState(null);
-  const [hoveredLocation, setHoveredLocation] = useState(null);
-  const customStates = ["Alabama", "Mississippi", "Pennsylvania"];
-  const [showBelowStateSelection, setShowBelowStateSelection] = useState(true);
-  const [showInfo1, setShowInfo1] = useState(false);
-  const [showInfo2, setShowInfo2] = useState(false);
+  const [jsonSMD, setJsonSMD] = useState(geoJson.features);
+  const jsonMMD = copyGeo.features;
+  // const [showInfo, setShowInfo] = useState(false);
   const [showGraph, setShowGraph] = useState("A");
-  const [coordinate, setCoordinate] = useState([0, 0]);
+  const [mapKey, setMapKey] = useState(0);
   const data_boxPlot = [useBoxPlot(boxPlots1), useBoxPlot(boxPlots2)];
+  let data_barchart_SMD_minority = [];
+  let data_barchart_MMD_minority = [];
+  let data_barchart_MMD_party = [];
+  let data_barchart_SMD_party = [];
+  // let stateInfo = [0, 0, null, null];
+  const [stateInfo, setStateInfo] = useState([0, 0, 0]);
+  const [onMMD, setOnMMD] = useState(false);
+
+  useEffect(() => {
+    let value = "";
+    if (selectedState == "Mississippi") {
+      value = "/ms/all/districts";
+    } else if (selectedState == "Alabama") {
+      value = "/al/all/districts";
+    } else {
+      value = "/pa/all/districts";
+    }
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080${value}`);
+        setGeoJson(response.data[0]);
+        setJsonSMD(response.data[0].features);
+        setMapKey(mapKey + 1);
+        setStateInfo([0, 0, 0]);
+        for (let i of response.data[0].features) {
+          setStateInfo((prevInfo) => [
+            prevInfo[0] + i["properties"]["c_TOT20"],
+            prevInfo[1] + i["properties"]["tot_VOTE"],
+            prevInfo[2] + 1,
+          ]);
+        }
+        console.log("Connected!");
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, [selectedState]);
+  const coordinate = useMemo(() => {
+    if (selectedState === "Alabama") {
+      return [32.8067, -86.7911];
+    } else if (selectedState === "Mississippi") {
+      return [32.3547, -90.0];
+    } else {
+      return [40.8781, -77.7996];
+    }
+  }, [selectedState]);
+  for (var i = 0; i < jsonSMD.length; i++) {
+    data_barchart_SMD_minority.push({
+      name: i + 1,
+      White: jsonSMD[i]["properties"]["c_WHT20"],
+      Aisan: jsonSMD[i]["properties"]["c_ASN20"],
+      Black: jsonSMD[i]["properties"]["c_BLK20"],
+      Hispanic: jsonSMD[i]["properties"]["c_HSP20"],
+    });
+    data_barchart_SMD_party.push({
+      name: i + 1,
+      Democrats: 90000,
+      Republicans: 50000,
+    });
+  }
+  for (var i = 0; i < jsonMMD.length; i++) {
+    data_barchart_MMD_minority.push({
+      name: i + 1,
+      White: jsonMMD[i]["properties"]["vap_white"],
+      Aisan: jsonMMD[i]["properties"]["vap_asian"],
+      Black: jsonMMD[i]["properties"]["vap_black"],
+      Hispanic: jsonMMD[i]["properties"]["vap_hisp"],
+    });
+    data_barchart_MMD_party.push({
+      name: i + 1,
+      Democrats: 50000,
+      Republicans: 50000,
+    });
+  }
   const formatXAxisTick = (tick) => {
     return `${(tick * 100).toFixed(0)}%`;
   };
   const formatYAxisTick = (tick) => {
     return `${(tick * 100).toFixed(0)}%`;
   };
-  const stateSelectionRef = useRef(0);
-  const minorityFairnessRef = useRef(0);
-  const politicalFairnessRef = useRef(0);
-  const analysisRef = useRef(0);
-  //   const mapHandler = (value) => {
-  //     setSelectedState(value);
-  //     if (value == "Alabama") {
-  //       setCoordinate([32.8067, -86.7911]);
-  //     } else if (value == "Mississippi") {
-  //       setCoordinate([32.3547, -90.0]);
-  //     } else {
-  //       setCoordinate([40.8781, -77.7996]);
-  //     }
-  //     analysisRef.current.scrollIntoView();
-  //   };
-
   const onEachDistrict_SMD = (district, layer, index) => {
     const onMouseOver = (e) => {
       layer.setStyle({
         fillColor: "rgb(40, 38, 38)",
       });
     };
-
     const onMouseOut = (e) => {
       layer.setStyle({
         fillColor: "rgb(220, 25, 10)",
       });
     };
-
+    const onAdd = (e) => {
+      const label = L.divIcon({
+        className: "district-label",
+        html: `<div style="font-size: 20px; color: black;">${index + 1}</div>`,
+      });
+      L.marker(layer.getBounds().getCenter(), { icon: label }).addTo(
+        layer._map
+      );
+    };
+    layer.setStyle({
+      color: "rgba(241, 243, 243, 1)",
+      fillColor: "rgb(220, 25, 10)",
+    });
+    layer.on({
+      mouseout: onMouseOut,
+      mouseover: onMouseOver,
+      add: onAdd,
+    });
+  };
+  const onEachDistrict_MMD = (district, layer, index) => {
+    const onMouseOver = (e) => {
+      layer.setStyle({
+        weight: 4,
+        fillColor: "rgb(40, 38, 38)",
+      });
+    };
+    const onMouseOut = (e) => {
+      layer.setStyle({
+        weight: 3,
+        fillColor: "rgb(220, 25, 10)",
+      });
+    };
     // const onClick = (e) => {
-    //   setSelectedDistrictSMD(district.properties);
-    //   setselectedDistrictPop_SMD([
-    //     district.properties.vap,
-    //     district.properties.vap_white,
-    //     district.properties.vap_asian,
-    //     district.properties.vap_black,
-    //     district.properties.vap_hisp,
-    //     0,
-    //     0,
-    //   ]);
-    //   // layer.setStyle({
-    //   //   weight: 3,
-    //   //   fillColor: "blue",
-    //   // });
+    //   setjsonMMD(district.properties);
     // };
     const onAdd = (e) => {
       const label = L.divIcon({
@@ -345,101 +306,6 @@ function Analysis() {
       add: onAdd,
     });
   };
-  const onEachDistrict_MMD = (district, layer, index) => {
-    const onMouseOver = (e) => {
-      layer.setStyle({
-        weight: 4,
-        fillColor: "rgb(40, 38, 38)",
-      });
-    };
-
-    const onMouseOut = (e) => {
-      layer.setStyle({
-        weight: 3,
-        fillColor: "rgb(220, 25, 10)",
-      });
-    };
-
-    const onClick = (e) => {
-      setSelectedDistrictMMD(district.properties);
-      setselectedDistrictPop_MMD([
-        district.properties.vap,
-        district.properties.vap_white,
-        district.properties.vap_asian,
-        district.properties.vap_black,
-        district.properties.vap_hisp,
-        0,
-        0,
-      ]);
-    };
-    const onAdd = (e) => {
-      const label = L.divIcon({
-        className: "district-label",
-        html: `<div style="font-size: 20px; color: black;">${index + 1}</div>`,
-      });
-      L.marker(layer.getBounds().getCenter(), { icon: label }).addTo(
-        layer._map
-      );
-    };
-    layer.setStyle({
-      color: "rgba(241, 243, 243, 1)",
-      fillColor: "rgb(220, 25, 10)",
-    });
-    layer.on({
-      mouseout: onMouseOut,
-      mouseover: onMouseOver,
-      click: onClick,
-      add: onAdd,
-    });
-  };
-  useEffect(() => {
-    const selectedDistrictSMD = congDist.features;
-    const selectedDistrictMMD = copyGeo.features;
-    let data_barchart_SMD = [];
-    let data_barchart_MMD = [];
-    let data_barchart_SMD2 = [];
-    let data_barchart_MMD2 = [];
-    if (selectedState === "Alabama") {
-      setCoordinate([32.8067, -86.7911]);
-    } else if (selectedState === "Mississippi") {
-      setCoordinate([32.3547, -90.0]);
-    } else {
-      setCoordinate([40.8781, -77.7996]);
-    }
-    for (var i = 0; i < selectedDistrictSMD.length; i++) {
-      data_barchart_SMD.push({
-        name: i + 1,
-        White: selectedDistrictSMD[i]["properties"]["vap_white"],
-        Aisan: selectedDistrictSMD[i]["properties"]["vap_asian"],
-        Black: selectedDistrictSMD[i]["properties"]["vap_black"],
-        Hispanic: selectedDistrictSMD[i]["properties"]["vap_hisp"],
-      });
-      data_barchart_SMD2.push({
-        name: i + 1,
-        Democrats: 90000,
-        Republicans: 50000,
-      });
-    }
-    setData_barchart_SMD(data_barchart_SMD);
-    setData_barchart_SMD2(data_barchart_SMD2);
-    console.log(data_barchart_SMD2);
-    for (var i = 0; i < selectedDistrictMMD.length; i++) {
-      data_barchart_MMD.push({
-        name: i + 1,
-        White: selectedDistrictMMD[i]["properties"]["vap_white"],
-        Aisan: selectedDistrictMMD[i]["properties"]["vap_asian"],
-        Black: selectedDistrictMMD[i]["properties"]["vap_black"],
-        Hispanic: selectedDistrictMMD[i]["properties"]["vap_hisp"],
-      });
-      data_barchart_MMD2.push({
-        name: i + 1,
-        Democrats: 50000,
-        Republicans: 50000,
-      });
-    }
-    setData_barchart_MMD(data_barchart_MMD);
-    setData_barchart_MMD2(data_barchart_MMD2);
-  }, [selectedState]);
 
   return (
     <>
@@ -515,26 +381,6 @@ function Analysis() {
               </h1>
               <Nav className="sidebar_nav">
                 <Nav.Link href="/">STATE SELECTION</Nav.Link>
-                {/* <NavDropdown title="ANALYSIS" className="sidebar_dropdown">
-                  <NavDropdown.Item
-                    className="sidebar_dropdownItem"
-                    onClick={() => {
-                      analysisRef.current.scrollIntoView();
-                      minorityFairnessRef.current?.click();
-                    }}
-                  >
-                    Minority Fairness
-                  </NavDropdown.Item>
-                  <NavDropdown.Item
-                    className="sidebar_dropdownItem"
-                    onClick={() => {
-                      analysisRef.current.scrollIntoView();
-                      politicalFairnessRef.current?.click();
-                    }}
-                  >
-                    Political Fairness
-                  </NavDropdown.Item>
-                </NavDropdown> */}
                 <Nav.Link href="./about">ABOUT</Nav.Link>
               </Nav>
             </Offcanvas.Body>
@@ -552,7 +398,7 @@ function Analysis() {
             &nbsp; FAIRWIN
           </Navbar.Brand>
         </Navbar>
-        <div className="body2" ref={analysisRef}>
+        <div className="body2">
           <Container>
             <Row>
               <Col className="col_stateInformation">
@@ -566,14 +412,15 @@ function Analysis() {
                     <thead>
                       <tr>
                         <td className="table_0">Population</td>
-                        <td></td>
+                        <td>{stateInfo[0]}</td>
                         <td className="table_0">Voting Population</td>
-                        <td></td>
+                        <td>{stateInfo[1]}</td>
                       </tr>
                       <tr>
                         <td className="table_0">Representative Seats</td>
-                        <td></td>
-                        <td className="table_0">Representative Party</td>
+                        <td>{stateInfo[2]}</td>
+                        {/* <td className="table_0">Representative Party</td> */}
+                        <td className="table_0"></td>
                         <td></td>
                       </tr>
                     </thead>
@@ -584,7 +431,7 @@ function Analysis() {
                     {!onMMD && (
                       <div className="mapContainer">
                         <MapContainer
-                          key={coordinate}
+                          key={mapKey}
                           center={coordinate}
                           zoom={6.5}
                           zoomControl={false}
@@ -592,27 +439,20 @@ function Analysis() {
                           className="map_district"
                         >
                           <GeoJSON
-                            data={congDist.features}
+                            data={jsonSMD}
                             onEachFeature={(district, layer) => {
                               onEachDistrict_SMD(
                                 district,
                                 layer,
-                                congDist.features.indexOf(district)
+                                jsonSMD.indexOf(district)
                               );
                             }}
                           />
                         </MapContainer>
                       </div>
                     )}
-
-                    {/* </MapContainer> */}
-
-                    {/* </Container> */}
-                    {/* </td>
-                      <td> */}
-                    {/* <Container> */}
                     {onMMD && (
-                      <Container>
+                      <div className="mapContainer">
                         <MapContainer
                           key={coordinate}
                           center={coordinate}
@@ -632,7 +472,7 @@ function Analysis() {
                             }
                           />
                         </MapContainer>
-                      </Container>
+                      </div>
                     )}
                     <Form>
                       <Form.Check
@@ -656,7 +496,6 @@ function Analysis() {
                         eventKey="link-1"
                         className="text_navElement_fairness"
                         onClick={() => setShowGraph("A")}
-                        ref={minorityFairnessRef}
                       >
                         Racial Population
                       </Nav.Link>
@@ -666,7 +505,6 @@ function Analysis() {
                         eventKey="link-2"
                         className="text_navElement_fairness"
                         onClick={() => setShowGraph("B")}
-                        ref={politicalFairnessRef}
                       >
                         Box & Whisker
                       </Nav.Link>
@@ -676,7 +514,6 @@ function Analysis() {
                         eventKey="link-3"
                         className="text_navElement_fairness"
                         onClick={() => setShowGraph("C")}
-                        ref={minorityFairnessRef}
                       >
                         Political Party
                       </Nav.Link>
@@ -686,7 +523,6 @@ function Analysis() {
                         eventKey="link-4"
                         className="text_navElement_fairness"
                         onClick={() => setShowGraph("D")}
-                        ref={minorityFairnessRef}
                       >
                         Curve
                       </Nav.Link>
@@ -695,50 +531,17 @@ function Analysis() {
                 </Row>
                 {showGraph == "A" && (
                   <div className="analysis1">
-                    {/* <h2 className="text_subQuestion1_1">
-                WILL FAIR REPRESENTATION ACT(FRA) for MMD
-                <span className="text_subQuestion2">
-                  {" "}
-                  INCREASE MINORITY FAIRNESS?
-                </span>
-                <Button
-                  variant="link"
-                  className="button_information"
-                  onClick={() => setShowInfo1(true)}
-                >
-                  <svg
-                    fill="rgb(40, 38, 38)"
-                    version="1.1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    xmlnsXlink="http://www.w3.org/1999/xlink"
-                    width="30px"
-                    height="30px"
-                    viewBox="0 0 416.979 416.979"
-                    xmlSpace="preserve"
-                  >
-                    <g>
-                      <path
-                        d="M356.004,61.156c-81.37-81.47-213.377-81.551-294.848-0.182c-81.47,81.371-81.552,213.379-0.181,294.85
-    c81.369,81.47,213.378,81.551,294.849,0.181C437.293,274.636,437.375,142.626,356.004,61.156z M237.6,340.786
-    c0,3.217-2.607,5.822-5.822,5.822h-46.576c-3.215,0-5.822-2.605-5.822-5.822V167.885c0-3.217,2.607-5.822,5.822-5.822h46.576
-    c3.215,0,5.822,2.604,5.822,5.822V340.786z M208.49,137.901c-18.618,0-33.766-15.146-33.766-33.765
-    c0-18.617,15.147-33.766,33.766-33.766c18.619,0,33.766,15.148,33.766,33.766C242.256,122.755,227.107,137.901,208.49,137.901z"
-                      />
-                    </g>
-                  </svg>
-                </Button>
-              </h2> */}
-                    {showInfo1 && (
+                    {/* {showInfo && (
                       <Alert
                         variant="dark"
                         className="alert_dataInformation"
-                        onClose={() => setShowInfo1(false)}
+                        onClose={() => setShowInfo(false)}
                         dismissible
                       >
                         <Alert.Heading>ABOUT THE DATA</Alert.Heading>
                         <p>In this section, ..</p>
                       </Alert>
-                    )}
+                    )} */}
                     <div className="tableContainer_analysis">
                       <Row style={{ padding: 0 }}>
                         <div
@@ -753,7 +556,7 @@ function Analysis() {
                             <BarChart
                               width={500}
                               height={300}
-                              data={data_barchart_SMD}
+                              data={data_barchart_SMD_minority}
                               margin={{
                                 top: 20,
                                 right: 30,
@@ -784,19 +587,7 @@ function Analysis() {
                             <BarChart
                               width={500}
                               height={300}
-                              data={
-                                data_barchart_MMD
-                                // {
-                                //   name: "White",
-                                //   White: selectedDistrictPop_MMD[1],
-                                // },
-                                // {
-                                //   name: "Non-White",
-                                //   Aisan: selectedDistrictPop_MMD[2],
-                                //   Black: selectedDistrictPop_MMD[3],
-                                //   Hispanic: selectedDistrictPop_MMD[4],
-                                // },
-                              }
+                              data={data_barchart_MMD_minority}
                               margin={{
                                 top: 20,
                                 right: 30,
@@ -821,82 +612,6 @@ function Analysis() {
                           </ResponsiveContainer>
                         </div>
                       </Row>
-                      {/* <Row>
-                        <Col>
-                          <div style={{ width: "100%", height: 300 }}>
-                            <ResponsiveContainer width="100%" height="100%">
-                              <PieChart width={500} height={500}>
-                                <Pie
-                                  activeIndex={activeIndex}
-                                  activeShape={renderActiveShape}
-                                  data={[
-                                    {
-                                      name: "White",
-                                      value: selectedDistrictPop_SMD[1],
-                                    },
-                                    {
-                                      name: "Asian",
-                                      value: selectedDistrictPop_SMD[2],
-                                    },
-                                    {
-                                      name: "Black",
-                                      value: selectedDistrictPop_SMD[3],
-                                    },
-                                    {
-                                      name: "Hispanic",
-                                      value: selectedDistrictPop_SMD[4],
-                                    },
-                                  ].sort((a, b) => b.value - a.value)}
-                                  cx="50%"
-                                  cy="50%"
-                                  innerRadius={60}
-                                  outerRadius={80}
-                                  fill="#4b8fe2"
-                                  dataKey="value"
-                                  onMouseEnter={onPieEnter}
-                                />
-                              </PieChart>
-                            </ResponsiveContainer>
-                          </div>
-                        </Col>
-                        <Col>
-                          <div style={{ width: "100%", height: 300 }}>
-                            <ResponsiveContainer width="100%" height="100%">
-                              <PieChart width={500} height={500}>
-                                <Pie
-                                  activeIndex={activeIndex}
-                                  activeShape={renderActiveShape}
-                                  data={[
-                                    {
-                                      name: "White",
-                                      value: selectedDistrictPop_MMD[1],
-                                    },
-                                    {
-                                      name: "Asian",
-                                      value: selectedDistrictPop_MMD[2],
-                                    },
-                                    {
-                                      name: "Black",
-                                      value: selectedDistrictPop_MMD[3],
-                                    },
-                                    {
-                                      name: "Hispanic",
-                                      value: selectedDistrictPop_MMD[4],
-                                    },
-                                  ].sort((a, b) => b.value - a.value)}
-                                  cx="50%"
-                                  cy="50%"
-                                  innerRadius={60}
-                                  outerRadius={80}
-                                  fill="#4b8fe2"
-                                  dataKey="value"
-                                  onMouseEnter={onPieEnter}
-                                />
-                              </PieChart>
-                            </ResponsiveContainer>
-                          </div>
-                        </Col>
-                      </Row> */}
                     </div>
                   </div>
                 )}
@@ -1037,7 +752,7 @@ function Analysis() {
                         <BarChart
                           width={500}
                           height={300}
-                          data={data_barchart_SMD2}
+                          data={data_barchart_SMD_party}
                           margin={{
                             top: 20,
                             right: 30,
@@ -1060,7 +775,7 @@ function Analysis() {
                         <BarChart
                           width={500}
                           height={300}
-                          data={data_barchart_MMD2}
+                          data={data_barchart_MMD_party}
                           margin={{
                             top: 20,
                             right: 30,
@@ -1123,8 +838,6 @@ function Analysis() {
                         </LineChart>
                       </ResponsiveContainer>
                     </div>
-                    {/* </td>
-                      <td> */}
                     <div style={{ width: "100%", height: 300 }}>
                       <ResponsiveContainer width="100%" height="100%">
                         <LineChart
