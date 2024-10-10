@@ -15,6 +15,6 @@ public class MSService {
     }
 
     public List<MSDistrict> findAllDistricts() {
-        return msDistrictRepository.findAll();  // This already returns a List
+        return msDistrictRepository.findAll();
     }
 }
