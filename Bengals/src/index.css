@@ -115,8 +115,9 @@ h1 span {
 
 .body {
     background-color: rgb(40, 38, 38);
-    padding-bottom: 10%;
+    padding-bottom: 5%;
     scroll-behavior: smooth;
+    justify-content: center;
 }
 
 .body1 {
@@ -146,6 +147,16 @@ h1 span {
     vertical-align: text-top;
     filter: invert(100%);
 }
+
+.text_selectedState_Analysis {
+    color: rgb(236, 31, 12);
+    font-size: 50px;
+    font-family: Gill Sans, sans-serif;
+    font-weight: bold;
+    white-space: nowrap;
+    text-align: center;
+}
+
 
 /* big screen */
 @media screen and (min-width:1250px) {
@@ -212,9 +223,17 @@ h1 span {
 
 .body2 {
     background-color: rgb(241, 243, 243);
-    padding-bottom: 10%;
+    /* padding-bottom: 10%; */
+    /* display: flex; */
+    /* justify-content: space-between; */
+    padding: 1%;
 }
 
+/* .contents{
+        padding-bottom: 10%;
+    display: flex;
+   justify-content: space-between;
+} */
 
 .text_Available_State {
     color: rgb(255, 255, 255);
@@ -279,10 +298,12 @@ h1 span {
 }
 
 .navbar_fairness {
-    margin-top: 10%;
-    padding-left: 5%;
-    justify-content: rights;
+    /* margin-top: 10%; */
+    /* padding-left: 5%; */
+    /* justify-content: rights; */
     background-color: rgb(40, 38, 38);
+    /* float: right; */
+    height: 69px;
 }
 
 .navbar_race {
@@ -319,13 +340,32 @@ h1 span {
     }
 }
 
+/* .graph{
+    background-color: rgb(245, 245, 245);
+  padding: 2%;
+  text-align: center;
+  width: "100%"; height: 300;
+} */
 .tableContainer_analysis {
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* justify-content: space-between; */
+    background-color: rgb(255, 255, 255);
+    /* justify-content: center; */
+    /* padding: 2%; */
+    /* text-align: center; */
+    /* margin-left: 4%;
+    margin-right: 4%; */
+    /* width: 45%; */
+    /* float: right; */
+}
+
+.mapContainer {
     background-color: rgb(255, 255, 255);
     justify-content: center;
-    padding: 2%;
-    text-align: center;
-    margin-left: 10%;
-    margin-right: 10%;
+    /* width: 45%; */
+    /* margin-left: 4%;
+    margin-right: 4%; */
 }
 
 .body3 {
@@ -365,21 +405,11 @@ tbody {
 }
 
 .map_district {
-    height: 300px;
+    height: 600px;
     position: relative;
     z-index: -0;
     background-color: rgba(255, 255, 255, 0);
     justify-content: center;
-}
-
-.map_district2 {
-    height: 43vh;
-    position: relative;
-    z-index: -0;
-    background-color: rgba(255, 255, 255, 0);
-    width: 40vh;
-    margin-top: 5%;
-    margin-left: 5%;
 }
 
 .summary_stateInformation {
@@ -412,3 +442,32 @@ tbody {
     color: white;
     margin: 10%;
 }
+
+.button_toAnalysis {
+    float: right;
+}
+
+/* .container{
+    display: flex;
+} */
+.districtMap {
+    padding: 0;
+}
+
+.col_stateInformation {
+    background-color: rgb(40, 38, 38);
+}
+
+.col_districtInformation {
+    background-color: rgb(40, 38, 38);
+}
+
+/* .graphContainer{
+    width: "100%"; height: 300;
+    margin: 0px;
+}
+.responsiveContainer{
+    width: "100%"; height: 300;
+    margin: 0px;
+    padding: 0px;
+} */

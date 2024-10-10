@@ -85,7 +85,7 @@ function About() {
                 <span className="char16">*</span>
               </h1>
               <Nav className="sidebar_nav">
-                <Nav.Link href="/">Home</Nav.Link>
+                <Nav.Link href="/">STATE SELECTION</Nav.Link>
               </Nav>
             </Offcanvas.Body>
           </Navbar.Offcanvas>
@@ -122,7 +122,9 @@ function About() {
           <p>Reference : </p>
           <br />
           <h1>ABOUT Bengal</h1>
-          <p>Hyunjun Cho, HyoJong Chung, Sinae Hong, Yeonkyung Ha</p>
+          <p>Data: Hyunjun Cho, HyoJong Chung</p>
+          <p>BackEnd: Sinae Hong, Hyunjun Cho</p>
+          <p>FrontEnd: Yeonkyung Ha</p>
         </div>
       </div>
     </>
