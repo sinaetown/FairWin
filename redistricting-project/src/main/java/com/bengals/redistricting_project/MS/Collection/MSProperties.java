@@ -11,14 +11,16 @@ import lombok.NoArgsConstructor;
 @Builder
 
 public class MSProperties {
-    private int C_TOT20;
-    private int VAP_TOT20;
-    private int C_ASN20;
-    private int C_BLK20;
-    private int C_WHT20;
-    private int C_HSP20;
-    private String DEM_VOTE;
-    private String REP_VOTE;
-    private String WINNER;
-    private String centroid;
+    private int total_pop;
+    private int vote_pop;
+    private int total_asn;
+    private int total_blk;
+    private int total_hsp;
+    private int total_wht;
+    private String vote_dem;
+    private String vote_rep;
+    private String win_cand;
+    private String win_pty;
+    private String cen_cord;
+
 }
