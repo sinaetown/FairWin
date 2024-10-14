@@ -17,10 +17,11 @@ public class MSProperties {
     private int total_blk;
     private int total_hsp;
     private int total_wht;
-    private String vote_dem;
-    private String vote_rep;
+    private int vote_dem;
+    private int vote_rep;
+    private int tot_vote;
     private String win_cand;
     private String win_pty;
-    private String cen_cord;
+    private String centroid;
 
 }
