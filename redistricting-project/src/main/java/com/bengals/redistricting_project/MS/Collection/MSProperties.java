@@ -19,7 +19,7 @@ public class MSProperties {
     private int total_wht;
     private int vote_dem;
     private int vote_rep;
-    private int tot_vote;
+    private int total_vote;
     private String win_cand;
     private String win_pty;
     private String centroid;
