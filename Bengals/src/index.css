@@ -120,21 +120,22 @@ h1 span {
     justify-content: center;
 }
 
-.body1 {
+.body_home {
     background-color: rgb(40, 38, 38);
-    /* padding-bottom: 10%; */
     scroll-behavior: smooth;
 }
 
 .brand {
-    padding-top: 2.5%;
-    padding-left: 3.5%;
+    padding-top: 1.5%;
+    padding-left: 2.5%;
+    display: flex;
 }
 
 .text_FAIRWIN {
     color: rgb(255, 255, 255);
     font-size: 220%;
     font-family: Gill Sans, sans-serif;
+    width: 100%;
 }
 
 .text_FAIRWIN:hover {
@@ -143,20 +144,32 @@ h1 span {
     font-family: Gill Sans, sans-serif;
 }
 
-.bengal {
+.svgIcon {
     vertical-align: text-top;
     filter: invert(100%);
 }
 
 .text_selectedState_Analysis {
+    background-color: rgb(40, 38, 38);
     color: rgb(236, 31, 12);
-    font-size: 50px;
+    font-size: 300%;
     font-family: Gill Sans, sans-serif;
     font-weight: bold;
     white-space: nowrap;
     text-align: center;
+    margin-bottom: 0px;
+    margin-right: 40%;
 }
 
+.text_contentsTitle_Analysis {
+    background-color: rgb(40, 38, 38);
+    color: white;
+    font-size: 300%;
+    font-family: Gill Sans, sans-serif;
+    white-space: nowrap;
+    text-align: center;
+    margin-bottom: 0px;
+}
 
 /* big screen */
 @media screen and (min-width:1250px) {
@@ -181,8 +194,8 @@ h1 span {
     }
 
     .map_us {
-        width: 65%;
-        height: 65%;
+        width: 75%;
+        height: 75%;
         justify-content: center;
         display: flex;
         position: relative;
@@ -221,19 +234,10 @@ h1 span {
     margin-left: 3%;
 }
 
-.body2 {
+.body_analysis {
     background-color: rgb(241, 243, 243);
-    /* padding-bottom: 10%; */
-    /* display: flex; */
-    /* justify-content: space-between; */
     padding: 1%;
 }
-
-/* .contents{
-        padding-bottom: 10%;
-    display: flex;
-   justify-content: space-between;
-} */
 
 .text_Available_State {
     color: rgb(255, 255, 255);
@@ -256,17 +260,6 @@ h1 span {
         padding-left: 8%;
         padding-top: 5%;
     }
-
-    /* 
-    .text_subQuestion1_2 {
-        color: rgb(40, 38, 38);
-        font-family: Tahoma;
-        font-size: 250%;
-        width: 65%;
-        font-weight: bold;
-        padding-left: 8%;
-        padding-top: 8%;
-    } */
 }
 
 /* small screen */
@@ -297,21 +290,13 @@ h1 span {
     margin-right: 10%;
 }
 
-.navbar_fairness {
-    /* margin-top: 10%; */
-    /* padding-left: 5%; */
-    /* justify-content: rights; */
+.navbar_analysis {
     background-color: rgb(40, 38, 38);
-    /* float: right; */
-    height: 69px;
+    padding-top: 6%;
+    padding-right: 0px;
 }
 
-.navbar_race {
-    margin-left: 10%;
-    margin-right: 10%;
-}
-
-.text_navElement_fairness {
+.text_navElement_analysis {
     color: rgb(241, 243, 243);
     font-weight: bold;
     border-bottom: 0px;
@@ -340,39 +325,6 @@ h1 span {
     }
 }
 
-/* .graph{
-    background-color: rgb(245, 245, 245);
-  padding: 2%;
-  text-align: center;
-  width: "100%"; height: 300;
-} */
-.tableContainer_analysis {
-    /* display: flex; */
-    /* flex-direction: column; */
-    /* justify-content: space-between; */
-    background-color: rgb(255, 255, 255);
-    /* justify-content: center; */
-    /* padding: 2%; */
-    /* text-align: center; */
-    /* margin-left: 4%;
-    margin-right: 4%; */
-    /* width: 45%; */
-    /* float: right; */
-}
-
-.mapContainer {
-    background-color: rgb(255, 255, 255);
-    justify-content: center;
-    /* width: 45%; */
-    /* margin-left: 4%;
-    margin-right: 4%; */
-}
-
-.body3 {
-    background-color: rgb(236, 31, 12);
-    padding-bottom: 10%;
-}
-
 .text_summary {
     color: rgb(0, 0, 0);
     font-family: Tahoma;
@@ -390,7 +342,7 @@ h1 span {
     width: 90%;
 }
 
-.table_0 {
+.table_stateInfo_col1 {
     text-align: center;
     width: 100px;
     font-weight: bold;
@@ -405,7 +357,7 @@ tbody {
 }
 
 .map_district {
-    height: 600px;
+    height: 500px;
     position: relative;
     z-index: -0;
     background-color: rgba(255, 255, 255, 0);
@@ -447,27 +399,90 @@ tbody {
     float: right;
 }
 
-/* .container{
-    display: flex;
-} */
 .districtMap {
     padding: 0;
 }
 
-.col_stateInformation {
+.contents_analysis {
     background-color: rgb(40, 38, 38);
+    margin: 3%;
+    padding-left: 3%;
+    padding-right: 3%;
+    padding-bottom: 3%;
+}
+
+.col_stateInformation {
+    margin-right: 3%;
+    padding: 0px;
+    flex: 1;
+    min-width: 400px;
 }
 
 .col_districtInformation {
-    background-color: rgb(40, 38, 38);
+    margin-left: 3%;
+    padding: 0px;
+    flex: 1;
+    min-width: 400px;
 }
 
-/* .graphContainer{
-    width: "100%"; height: 300;
-    margin: 0px;
-}
-.responsiveContainer{
-    width: "100%"; height: 300;
-    margin: 0px;
+.item_contents_analysis {
+    margin-top: 3%;
+    background-color: rgb(255, 255, 255);
     padding: 0px;
-} */
+}
+
+.responsiveContainer {
+    width: 100%;
+    height: 330;
+}
+
+.table_contents_analysis {
+    margin-bottom: 0px;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.switch_districtMap {
+    width: 40%;
+    margin-left: 30%;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    width: 3%;
+}
+
+.modal-content {
+    background-color: rgba(255, 255, 255, 0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+    padding: 60px;
+    max-width: 90%;
+    overflow: hidden;
+    border: 0px;
+}
+
+.button-container {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.toAnalysisButtons {
+    width: 100px;
+    aspect-ratio: 1 / 1;
+    border-radius: 10%;
+    background-color: white;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: rgb(40, 38, 38);
+    font-size: 18px;
+    text-decoration: none;
+}
