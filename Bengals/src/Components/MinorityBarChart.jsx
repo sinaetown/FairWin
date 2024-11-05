@@ -1,9 +1,9 @@
 import React from "react";
 import {
   BarChart,
-  CartesianGrid,
   XAxis,
   YAxis,
+  CartesianGrid,
   Tooltip,
   Legend,
   Bar,
@@ -12,7 +12,7 @@ import {
 
 const MinorityBarChart = ({ data }) => {
   return (
-    <ResponsiveContainer className="responsiveContainer">
+    <ResponsiveContainer>
       <BarChart
         data={data}
         margin={{
@@ -24,7 +24,13 @@ const MinorityBarChart = ({ data }) => {
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
-        <YAxis />
+        <YAxis
+          tickFormatter={(value) => {
+            return value >= 10000
+              ? `${Math.round(value / 10000)}M`
+              : value.toLocaleString();
+          }}
+        />
         <Tooltip />
         <Legend />
         <Bar dataKey="White" fill="#ffc658" />

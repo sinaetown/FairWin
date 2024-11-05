@@ -1,16 +1,16 @@
 import React from "react";
 import {
   BarChart,
-  Bar,
+  CartesianGrid,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   Legend,
+  Bar,
   ResponsiveContainer,
 } from "recharts";
 
-const PoliticalBarChart = ({ data }) => {
+const OpportunityBar = ({ keyName, data }) => {
   return (
     <ResponsiveContainer>
       <BarChart
@@ -24,20 +24,13 @@ const PoliticalBarChart = ({ data }) => {
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
-        <YAxis
-          tickFormatter={(value) => {
-            return value >= 10000
-              ? `${Math.round(value / 10000)}M`
-              : value.toLocaleString();
-          }}
-        />
+        <YAxis />
         <Tooltip />
         <Legend />
-        <Bar dataKey="Democrats" fill="#6a9bd1" />
-        <Bar dataKey="Republicans" fill="#ff4c4c" />
+        <Bar dataKey={keyName} fill="#8884d8" />
       </BarChart>
     </ResponsiveContainer>
   );
 };
 
-export default PoliticalBarChart;
+export default OpportunityBar;

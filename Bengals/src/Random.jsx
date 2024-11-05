@@ -1,14 +1,13 @@
 import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
-import bengalLogo from "./assets/Bengal.svg";
-import testJson from "./assets/blank_random.json";
 import Sidebar from "./Components/Sidebar";
 import StateInfoTable from "./Components/StateInfoTable";
-import { Nav, Navbar, Container, Row, Col, Carousel } from "react-bootstrap";
+import { Nav, Row, Col, Carousel } from "react-bootstrap";
 import DistrictMap from "./Components/DistrictMap";
 import MinorityBarChart from "./Components/MinorityBarChart";
 import PoliticalBarChart from "./Components/PoliticalBarChart";
+import Brand from "./Components/Brand";
 
 function Random() {
   const [showSideBar, setShowSideBar] = useState(false);
@@ -17,8 +16,8 @@ function Random() {
   const { selectedState, option } = location.state || {};
   const [showGraph, setShowGraph] = useState("Racial Population");
   const [mapKey, setMapKey] = useState(0);
-  let data_barchart_minority = [];
-  let data_barchart_party = [];
+  const [data_barchart_minority, setData_barchart_minority] = useState([]);
+  const [data_barchart_party, setData_barchart_party] = useState([]);
   const [index, setIndex] = useState(0);
   const handleSelect = (selectedIndex) => {
     setIndex(selectedIndex);
@@ -27,65 +26,102 @@ function Random() {
     population: 0,
     votePopulation: 0,
     totalSeats: 0,
-    democrat: 0,
-    republican: 0,
-  }); //Population, Voting Population, Representative Seats, (Democrats, Republicans)
+    Democrat: 0,
+    Republican: 0,
+    Minorities: {},
+  });
 
   useEffect(() => {
-    let features = [];
-    let value = "";
-    if (selectedState == "Mississippi") {
-      value = "/MS/all/districts";
-    } else if (selectedState == "Alabama") {
-      value = "/AL/all/districts";
-    } else {
-      value = "/PA/all/districts";
-    }
-    setStateInfo({
-      population: 0,
-      votePopulation: 0,
-      totalSeats: 0,
-      democrat: 0,
-      republican: 0,
-    });
-    // const fetchData = async () => {
-    //   try {
-    //     const response = await axios.get(`http://localhost:8080${value}`);
-    //     features = response.data.features;
-    //     setGeoFeature(features);
-    //     console.log(features);
-    //     setMapKey(mapKey + 1);
-    //     console.log("Connected!");
-    //   } catch (error) {
-    //     console.error("Error fetching data:", error);
-    //   }
-    // };
-    // fetchData();
-    const setGraphData = (features) => {
-      for (let i of features) {
-        if (i["properties"]["win_pty"] == "DEMOCRATS") {
-          setStateInfo((prevInfo) => ({
-            population: prevInfo.population + i["properties"]["total_pop"],
-            votePopulation:
-              prevInfo.votePopulation + i["properties"]["vote_pop"],
-            totalSeats: prevInfo.totalSeats + 1,
-            democrat: prevInfo.democrat + 1,
-            republican: prevInfo.republican,
-          }));
-        } else {
-          setStateInfo((prevInfo) => ({
-            population: prevInfo.population + i["properties"]["total_pop"],
-            votePopulation:
-              prevInfo.votePopulation + i["properties"]["vote_pop"],
-            totalSeats: prevInfo.totalSeats + 1,
-            democrat: prevInfo.democrat,
-            republican: prevInfo.republican + 1,
-          }));
-        }
+    const api = {
+      Mississippi: {
+        stateInfo: "/MS/info",
+        randomPlanSMD: "/MS/all/districts/smd",
+        randomPlanMMD: "/MS/all/districts/mmd",
+      },
+      Alabama: {
+        stateInfo: "/AL/info",
+        randomPlanSMD: "/AL/all/districts/smd",
+        randomPlanMMD: "/MS/all/districts/mmd",
+      },
+      Pennsylvania: {
+        stateInfo: "/PA/info",
+        randomPlanSMD: "/PA/all/districts/smd",
+        randomPlanMMD: "/MS/all/districts/mmd",
+      },
+    };
+    const initValue = () => {
+      setStateInfo({
+        population: 0,
+        votePopulation: 0,
+        totalSeats: 0,
+        Democrat: 0,
+        Republican: 0,
+        Minorities: {},
+      });
+      setData_barchart_minority([]);
+      setData_barchart_party([]);
+    };
+    const setBarchartData = (features) => {
+      let barchart_minority = [];
+      let barchart_party = [];
+      for (var i = 0; i < features.length; i++) {
+        let properties = features[i]["properties"];
+        barchart_minority.push({
+          name: i + 1,
+          White: properties["total_wht"],
+          Asian: properties["total_asn"],
+          Black: properties["total_blk"],
+          Hispanic: properties["total_hsp"],
+        });
+        barchart_party.push({
+          name: i + 1,
+          Democrats: properties["vote_dem"],
+          Republicans: properties["vote_rep"],
+        });
+      }
+      setData_barchart_minority(barchart_minority);
+      setData_barchart_party(barchart_party);
+    };
+    const fetchData = async () => {
+      let api_stateInfo = api[selectedState].stateInfo;
+      let api_randomPlan = "";
+      if (option.includes("SMD")) {
+        api_randomPlan = api[selectedState].randomPlanSMD;
+      } else {
+        api_randomPlan = api[selectedState].randomPlanMMD;
+      }
+      console.log(option);
+      console.log(api_randomPlan);
+      let features = [];
+      try {
+        initValue();
+        const stateInfo = await axios.get(
+          `http://localhost:8080${api_stateInfo}`
+        );
+        const randomPlan = await axios.get(
+          `http://localhost:8080${api_randomPlan}`
+        );
+        console.log(api_randomPlan);
+        setStateInfo({
+          population: stateInfo.data["total_pop"],
+          votePopulation: stateInfo.data["vote_pop"],
+          totalSeats: stateInfo.data["total_seats"],
+          Democrat: stateInfo.data["Democrats"],
+          Republican: stateInfo.data["Republicans"],
+          Minorities: stateInfo.data["racial_pop"],
+        });
+        features = randomPlan.data[index]["features"];
+        setGeoFeature(features);
+        setBarchartData(features);
+        setMapKey(mapKey + 1);
+        console.log("Connected!");
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
     };
-    setGraphData(features);
-  }, [selectedState]);
+    fetchData();
+  }, [selectedState, index]);
+
   const coordinate = useMemo(() => {
     if (selectedState === "Alabama") {
       return [32.8067, -86.7911];
@@ -95,21 +131,6 @@ function Random() {
       return [40.8781, -77.7996];
     }
   }, [selectedState]);
-
-  for (var i = 0; i < geoFeature.length; i++) {
-    data_barchart_minority.push({
-      name: i + 1,
-      White: geoFeature[i]["properties"]["total_wht"],
-      Asian: geoFeature[i]["properties"]["total_asn"],
-      Black: geoFeature[i]["properties"]["total_blk"],
-      Hispanic: geoFeature[i]["properties"]["total_hsp"],
-    });
-    data_barchart_party.push({
-      name: i + 1,
-      Democrats: geoFeature[i]["properties"]["vote_dem"],
-      Republicans: geoFeature[i]["properties"]["vote_rep"],
-    });
-  }
 
   const onEachDistrict = (district, layer, index) => {
     let centroid = district["properties"]["centroid"].split(",");
@@ -124,12 +145,7 @@ function Random() {
         fillColor: "rgb(220, 25, 10)",
       });
     };
-    layer.bindPopup(
-      district["properties"]["win_pty"] +
-        " (" +
-        district["properties"]["win_cand"] +
-        ")"
-    );
+    layer.bindPopup(district["properties"]["win_pty"]);
     const onAdd = (e) => {
       const label = L.divIcon({
         className: "district-label",
@@ -152,35 +168,33 @@ function Random() {
     <>
       <div className="body">
         <Sidebar show={showSideBar} handleClose={() => setShowSideBar(false)} />
-        <Navbar data-bs-theme="dark" className="brand">
-          <Navbar.Brand href="/" className="text_FAIRWIN">
-            <img alt="" src={bengalLogo} className="svgIcon" />
-            &nbsp; FAIRWIN
-          </Navbar.Brand>
-          <span className="text_selectedState_Analysis">
-            {selectedState.toUpperCase()}
-          </span>
-        </Navbar>
+        <Brand
+          title={selectedState.toUpperCase()}
+          className={"text_selectedState_Analysis"}
+        />
         <div className="body_analysis">
           <Carousel
-            variant="dark"
+            variant="light"
             activeIndex={index}
             onSelect={handleSelect}
             interval={null}
           >
             {[0, 1, 2, 3, 4].map((item, index) => (
               <Carousel.Item key={index}>
-                <Row className="contents_analysis">
+                <Row className="contents_Random">
                   <Col xs={12} md={6} className="col_stateInformation">
-                    <Row className="item_contents_analysis">
+                    <Row className="item_contents_Random">
                       <div className="text_contentsTitle_Analysis">
                         {option}
                       </div>
                     </Row>
-                    <Row className="item_contents_analysis">
-                      <StateInfoTable stateInfo={stateInfo} />
+                    <Row className="item_contents_Random">
+                      <StateInfoTable
+                        stateInfo={stateInfo}
+                        className={"table_contents_Random"}
+                      />
                     </Row>
-                    <Row className="item_contents_analysis">
+                    <Row className="item_plot_Random">
                       <div className="districtMap">
                         <DistrictMap
                           mapKey={mapKey}
@@ -191,12 +205,12 @@ function Random() {
                       </div>
                     </Row>
                   </Col>
-                  <Col className="col_districtInformation">
-                    <Row className="item_contents_analysis">
+                  <Col className="col_districtInformation_Random">
+                    <Row className="item_contents_Random">
                       <Nav
                         variant="tabs"
                         defaultActiveKey="link-1"
-                        className="navbar_analysis"
+                        className="navbar_Random"
                       >
                         <Nav.Item>
                           <Nav.Link
@@ -219,24 +233,24 @@ function Random() {
                       </Nav>
                     </Row>
                     {showGraph === "Racial Population" && (
-                      <div>
-                        <Row
-                          className="item_contents_analysis"
+                      <Row>
+                        <div
+                          className="item_plot_Random"
                           style={{ width: "100%", height: 330 }}
                         >
                           <MinorityBarChart data={data_barchart_minority} />
-                        </Row>
-                      </div>
+                        </div>
+                      </Row>
                     )}
                     {showGraph === "Political Party" && (
-                      <Container>
-                        <Row
-                          className="item_contents_analysis"
+                      <Row>
+                        <div
+                          className="item_plot_Random"
                           style={{ width: "100%", height: 330 }}
                         >
                           <PoliticalBarChart data={data_barchart_party} />
-                        </Row>
-                      </Container>
+                        </div>
+                      </Row>
                     )}
                   </Col>
                 </Row>

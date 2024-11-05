@@ -6,8 +6,11 @@ import testJson from "./assets/blank_ensemble.json";
 import Sidebar from "./Components/Sidebar";
 import Brand from "./Components/Brand";
 import BoxWhisker from "./Components/BoxWhisker";
-import { Nav, Container, Row, Col } from "react-bootstrap";
+import { Nav, Row, Col } from "react-bootstrap";
 import SeatVoteCurve from "./Components/SeatVoteCurve";
+import PoliticalBarChart from "./Components/PoliticalBarChart";
+import OpportunityBar from "./Components/OpportunityBar";
+import TabDropDown from "./Components/TabDropDown";
 
 const useBoxPlot = (boxPlots) => {
   const data = useMemo(
@@ -31,107 +34,132 @@ const useBoxPlot = (boxPlots) => {
 function Ensemble() {
   const [showSideBar, setShowSideBar] = useState(false);
   const [geoFeature, setGeoFeature] = useState([]);
+  const [mapKey, setMapKey] = useState(0);
   const location = useLocation();
   const { selectedState, option } = location.state || {};
   const [showGraph, setShowGraph] = useState("Box & Whisker");
-  const [boxWhiskerSMD_data, setBoxWhiskerSMD] = useState(useBoxPlot([]));
-  const [boxWhiskerMMD_data, setBoxWhiskerMMD] = useState(useBoxPlot([]));
-  const [minority_curveSMD, setMinority_curveSMD] = useState([]);
-  const [minority_curveMMD, setMinority_curveMMD] = useState([]);
+  const [showMinority, setShowMinority] = useState("blk");
+  const [boxWhisker_data, setBoxWhisker] = useState({
+    SMD: [],
+    MMD: [],
+  });
+  const [minority_curve, setMinority_curve] = useState({ SMD: {}, MMD: {} });
+  const [partySplits, setPartySplits] = useState({ SMD: {}, MMD: {} });
+  const [opDistrict, setOpDistrict] = useState({ SMD: {}, MMD: {} });
+  const [opRepresentatives, setOpRepresentatives] = useState({
+    SMD: {},
+    MMD: {},
+  });
   const [stateInfo, setStateInfo] = useState({
     population: 0,
     votePopulation: 0,
     totalSeats: 0,
-    democrat: 0,
-    republican: 0,
-  }); //Population, Voting Population, Representative Seats, (Democrats, Republicans)
+    Democrat: 0.0,
+    Republican: 0.0,
+    Minorities: { blk: 0.0, hisp: 0.0, asn: 0.0, non_white: 0.0 },
+  });
 
   useEffect(() => {
-    let features = [];
-    let value = "";
-    if (selectedState == "Mississippi") {
-      value = "/MS/all/districts";
-    } else if (selectedState == "Alabama") {
-      value = "/AL/all/districts";
-    } else {
-      value = "/PA/all/districts";
-    }
-    setStateInfo({
-      population: 0,
-      votePopulation: 0,
-      totalSeats: 0,
-      democrat: 0,
-      republican: 0,
-    });
-    // const fetchData = async () => {
-    //   try {
-    //     const response = await axios.get(`http://localhost:8080${value}`);
-    //     features = response.data.features;
-    //     setGeoFeature(features);
-    //     console.log(features);
-    //     setMapKey(mapKey + 1);
-    //     console.log("Connected!");
-    //   } catch (error) {
-    //     console.error("Error fetching data:", error);
-    //   }
-    // };
-    // fetchData();
-    const setGraphData = (features) => {
-      for (let i of features) {
-        if (i["properties"]["win_pty"] == "DEMOCRATS") {
-          setStateInfo((prevInfo) => ({
-            population: prevInfo.population + i["properties"]["total_pop"],
-            votePopulation:
-              prevInfo.votePopulation + i["properties"]["vote_pop"],
-            totalSeats: prevInfo.totalSeats + 1,
-            democrat: prevInfo.democrat + 1,
-            republican: prevInfo.republican,
-          }));
-        } else {
-          setStateInfo((prevInfo) => ({
-            population: prevInfo.population + i["properties"]["total_pop"],
-            votePopulation:
-              prevInfo.votePopulation + i["properties"]["vote_pop"],
-            totalSeats: prevInfo.totalSeats + 1,
-            democrat: prevInfo.democrat,
-            republican: prevInfo.republican + 1,
-          }));
-        }
-        setBoxWhiskerSMD(i["properties"]["box_whisker"]);
-        setMinority_curveSMD(i["properties"]["minority_curve"]);
+    const api = {
+      Mississippi: { stateInfo: "/MS/info", ensemble: "/MS/ensemble" },
+      Alabama: { stateInfo: "/AL/info", ensemble: "/AL/ensemble" },
+      Pennsylvania: { stateInfo: "/PA/info", ensemble: "/PA/ensemble" },
+    };
+    const initValue = () => {
+      setStateInfo({
+        population: 0,
+        votePopulation: 0,
+        totalSeats: 0,
+        Democrat: 0.0,
+        Republican: 0.0,
+        Minorities: { blk: 0.0, hisp: 0.0, asn: 0.0, non_white: 0.0 },
+      });
+      setBoxWhisker({ SMD: [], MMD: [] });
+      setMinority_curve({ SMD: {}, MMD: {} });
+      setPartySplits({ SMD: {}, MMD: {} });
+      setOpDistrict({ SMD: {}, MMD: {} });
+      setOpRepresentatives({ SMD: {}, MMD: {} });
+    };
+    const setValue = (stateInfo, ensemble) => {
+      let features = ensemble.data;
+      setStateInfo({
+        population: stateInfo.data["total_pop"],
+        votePopulation: stateInfo.data["vote_pop"],
+        totalSeats: stateInfo.data["total_seats"],
+        Democrat: stateInfo.data["Democrats"],
+        Republican: stateInfo.data["Republicans"],
+        Minorities: stateInfo.data["racial_pop"],
+      });
+      setGeoFeature(features);
+      setMapKey(mapKey + 1);
+      setBoxWhisker({
+        SMD: features["box_whisker"]["box_SMD"],
+        MMD: features["box_whisker"]["box_MMD"],
+      });
+      setMinority_curve({
+        SMD: features["vote_seats"]["SMD"],
+        MMD: features["vote_seats"]["MMD"],
+      });
+      setPartySplits({
+        SMD: features["party_splits_bar"]["SMD"],
+        MMD: features["party_splits_bar"]["MMD"],
+      });
+      setOpDistrict({
+        SMD: features["op_district_bar"]["SMD"],
+        MMD: features["op_district_bar"]["MMD"],
+      });
+      setOpRepresentatives({
+        SMD: features["op_representatives_bar"]["SMD"],
+        MMD: features["op_representatives_bar"]["MMD"],
+      });
+    };
+    const fetchData = async () => {
+      let api_stateInfo = api[selectedState].stateInfo;
+      let api_ensemble = api[selectedState].ensemble;
+      try {
+        initValue();
+        const stateInfo = await axios.get(
+          `http://localhost:8080${api_stateInfo}`
+        );
+        const ensemble = await axios.get(
+          `http://localhost:8080${api_ensemble}`
+        );
+        setValue(stateInfo, ensemble);
+        console.log("Connected!");
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
     };
-    setGraphData(features);
+    fetchData();
   }, [selectedState]);
-  const boxWhiskerSMD = useBoxPlot(boxWhiskerSMD_data);
-  const formatYAxisTick = (tick) => {
-    return `${(tick * 100).toFixed(0)}%`;
-  };
+  const boxWhiskerSMD = useBoxPlot(boxWhisker_data.SMD);
+  const boxWhiskerMMD = useBoxPlot(boxWhisker_data.MMD);
 
   return (
     <>
       <div className="body">
         <Sidebar show={showSideBar} handleClose={() => setShowSideBar(false)} />
-        <Brand />
+        <Brand title={option} className={"text_contentsTitle_Ensemble"} />
         <div className="body_analysis">
-          <Row className="contents_analysis">
+          <Row className="contents_Ensemble">
             <Col xs={12} md={6} className="col_stateInformation">
-              <Row className="item_contents_analysis">
-                <div className="text_contentsTitle_Analysis">{option}</div>
-              </Row>
-              <Row className="item_contents_analysis">
-                <StateInfoTable stateInfo={stateInfo} />
+              <Row className="item_contents_Ensemble">
+                <StateInfoTable
+                  stateInfo={stateInfo}
+                  className={"table_contents_Ensemble"}
+                  key={stateInfo}
+                />
               </Row>
             </Col>
-            <Row className="item_contents_analysis">
+            <Row className="item_contents_Ensemble">
               <Nav
                 variant="tabs"
-                defaultActiveKey="link-2"
-                className="navbar_analysis"
+                defaultActiveKey="link-1"
+                className="navbar_Ensemble"
               >
                 <Nav.Item>
                   <Nav.Link
-                    eventKey="link-2"
+                    eventKey="link-1"
                     className="text_navElement_analysis"
                     onClick={() => setShowGraph("Box & Whisker")}
                   >
@@ -140,58 +168,133 @@ function Ensemble() {
                 </Nav.Item>
                 <Nav.Item>
                   <Nav.Link
-                    eventKey="link-4"
+                    eventKey="link-2"
                     className="text_navElement_analysis"
-                    onClick={() => setShowGraph("Curve")}
+                    onClick={() => setShowGraph("SeatVoteCurve")}
                   >
-                    Curve
+                    SeatVoteCurve
                   </Nav.Link>
                 </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link
+                    eventKey="link-3"
+                    className="text_navElement_analysis"
+                    onClick={() => setShowGraph("Party Splits")}
+                  >
+                    Party Splits
+                  </Nav.Link>
+                </Nav.Item>
+                <TabDropDown
+                  title="Opportunity District"
+                  startingEventKey="4"
+                  onSelect={(value) => {
+                    setShowGraph("Opportunity District");
+                    setShowMinority(value);
+                  }}
+                />
+
+                <TabDropDown
+                  title="Opportunity Representatives"
+                  startingEventKey="8"
+                  onSelect={(value) => {
+                    setShowGraph("Opportunity Representatives");
+                    setShowMinority(value);
+                  }}
+                />
               </Nav>
             </Row>
+            <div className="text_SMDvsMMD">SMD VS MMD</div>
             {showGraph == "Box & Whisker" && (
-              <Container>
-                <Row
-                  className="item_contents_analysis"
+              <Row className="item_contents_Ensemble">
+                <Col
+                  className="item_plot_Ensemble"
                   style={{ width: "100%", height: 330 }}
                 >
-                  <BoxWhisker
-                    data={boxWhiskerSMD}
-                    formatYAxisTick={formatYAxisTick}
-                  />
-                </Row>
-                <Row
-                  className="item_contents_analysis"
+                  <BoxWhisker data={boxWhiskerSMD} />
+                </Col>
+                <Col
+                  className="item_plot_Ensemble"
                   style={{ width: "100%", height: 330 }}
                 >
-                  <BoxWhisker
-                    data={boxWhiskerMMD_data}
-                    formatYAxisTick={formatYAxisTick}
-                  />
-                </Row>
-              </Container>
+                  <BoxWhisker data={boxWhiskerMMD} />
+                </Col>
+              </Row>
             )}
-            {showGraph == "Curve" && (
-              <Container>
-                <Row
-                  className="item_contents_analysis"
+            {showGraph == "SeatVoteCurve" && (
+              <Row className="item_contents_Ensemble">
+                <Col
+                  className="item_plot_Ensemble"
                   style={{ width: "100%", height: 330 }}
                 >
-                  <SeatVoteCurve
-                    data={minority_curveSMD}
-                    formatYAxisTick={formatYAxisTick}
-                  />
-                </Row>
-                <Row
-                  className="item_contents_analysis"
+                  <SeatVoteCurve data={minority_curve.SMD} />
+                </Col>
+                <Col
+                  className="item_plot_Ensemble"
                   style={{ width: "100%", height: 330 }}
                 >
-                  <SeatVoteCurve
-                    data={minority_curveMMD}
-                    formatYAxisTick={formatYAxisTick}
+                  <SeatVoteCurve data={minority_curve.MMD} />
+                </Col>
+              </Row>
+            )}
+            {showGraph === "Party Splits" && (
+              <Row className="item_contents_Ensemble">
+                <Col
+                  className="item_plot_Ensemble"
+                  style={{ width: "100%", height: 330 }}
+                >
+                  <PoliticalBarChart data={partySplits.SMD} />
+                </Col>
+                <Col
+                  className="item_plot_Ensemble"
+                  style={{ width: "100%", height: 330 }}
+                >
+                  <PoliticalBarChart data={partySplits.MMD} />
+                </Col>
+              </Row>
+            )}
+            {showGraph === "Opportunity District" && (
+              <Row className="item_contents_Ensemble">
+                <Col
+                  className="item_plot_Ensemble"
+                  style={{ width: "100%", height: 330 }}
+                >
+                  <OpportunityBar
+                    keyName="op_districts"
+                    data={opDistrict.SMD[showMinority]}
                   />
-                </Row>
-              </Container>
+                </Col>
+                <Col
+                  className="item_plot_Ensemble"
+                  style={{ width: "100%", height: 330 }}
+                >
+                  <OpportunityBar
+                    keyName="op_districts"
+                    data={opDistrict.MMD[showMinority]}
+                  />
+                </Col>
+              </Row>
+            )}
+            {showGraph === "Opportunity Representatives" && (
+              <Row className="item_contents_Ensemble">
+                <Col
+                  className="item_plot_Ensemble"
+                  style={{ width: "100%", height: 330 }}
+                >
+                  <OpportunityBar
+                    keyName="op_representatives"
+                    data={opRepresentatives.SMD[showMinority]}
+                  />
+                </Col>
+                <Col
+                  className="item_plot_Ensemble"
+                  style={{ width: "100%", height: 330 }}
+                >
+                  <OpportunityBar
+                    keyName="op_representatives"
+                    data={opRepresentatives.MMD[showMinority]}
+                  />
+                </Col>
+              </Row>
             )}
           </Row>
         </div>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Container, Button } from "react-bootstrap";
+import { Row, Col, Container, Button } from "react-bootstrap";
 
 import arrowCircleIcon from "./assets/arrowCircleIcon.svg";
 import circleIcon from "./assets/circleIcon.svg";
@@ -22,6 +22,9 @@ function Home() {
   const toRandom = (state, option) => {
     navigate(`/Random/${state}`, { state: { selectedState, option } });
   };
+  const toCompareCurrent = (state, option) => {
+    navigate(`/CompareCurrent/${state}`, { state: { selectedState, option } });
+  };
   return (
     <>
       <div className="body">
@@ -35,40 +38,48 @@ function Home() {
                 ? hoveredLocation.toUpperCase()
                 : selectedState.toUpperCase()}
             </div>
-            <Container className="map_us">
-              <USMap
-                hoveredLocation={hoveredLocation}
-                selectedState={selectedState}
-                setHoveredLocation={setHoveredLocation}
-                setSelectedState={setSelectedState}
-              />
-            </Container>
-            {customStates.includes(selectedState) && (
-              <div className="button_toAnalysis">
-                <Button variant="link" onClick={setShowButtons}>
-                  <img
-                    alt=""
-                    src={arrowCircleIcon}
-                    width="45px"
-                    height="45px"
-                    className="svgIcon"
+            <Row>
+              <Col xs={1}>
+                <div className="dataExplaination">
+                  <span className="text_Available_State">
+                    {" "}
+                    <img
+                      alt=""
+                      src={circleIcon}
+                      width="10px"
+                      height="10px"
+                      className="svgIcon"
+                    />
+                    &nbsp;Available State
+                  </span>
+                </div>
+              </Col>
+              <Col xs={10}>
+                <Container className="map_us">
+                  <USMap
+                    hoveredLocation={hoveredLocation}
+                    selectedState={selectedState}
+                    setHoveredLocation={setHoveredLocation}
+                    setSelectedState={setSelectedState}
                   />
-                </Button>
-              </div>
-            )}
-            <div className="dataExplaination">
-              <span className="text_Available_State">
-                {" "}
-                <img
-                  alt=""
-                  src={circleIcon}
-                  width="10px"
-                  height="10px"
-                  className="svgIcon"
-                />
-                &nbsp;Available State
-              </span>
-            </div>
+                </Container>
+              </Col>
+              <Col xs={1}>
+                {customStates.includes(selectedState) && (
+                  <div className="button_toAnalysis">
+                    <Button variant="link" onClick={setShowButtons}>
+                      <img
+                        alt=""
+                        src={arrowCircleIcon}
+                        width="45px"
+                        height="45px"
+                        className="svgIcon"
+                      />
+                    </Button>
+                  </div>
+                )}
+              </Col>
+            </Row>
           </Container>
           <ToAnalysisButtons
             show={showButtons}
@@ -76,6 +87,7 @@ function Home() {
             toEnsemble={toEnsemble}
             toRandom={toRandom}
             selectedState={selectedState}
+            toCompareCurrent={toCompareCurrent}
           />
         </div>
       </div>

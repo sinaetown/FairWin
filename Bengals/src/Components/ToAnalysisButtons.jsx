@@ -7,6 +7,7 @@ const ToAnalysisButtons = ({
   toEnsemble,
   toRandom,
   selectedState,
+  toCompareCurrent,
 }) => {
   return (
     <Modal show={show} onHide={handleClose} className="modal">
@@ -14,23 +15,30 @@ const ToAnalysisButtons = ({
         <Button
           variant="link"
           className="toAnalysisButtons"
-          onClick={() => toEnsemble(selectedState, "Ensemble SMD/MMD")}
+          onClick={() => toEnsemble(selectedState, "Ensemble SMD & MMD")}
         >
-          Ensemble SMD/MMD
+          Ensemble SMD & MMD
         </Button>
         <Button
           variant="link"
           className="toAnalysisButtons"
-          onClick={() => toRandom(selectedState, "Random SMD")}
+          onClick={() => toRandom(selectedState, "5 Sample SMD Plans")}
         >
-          Random SMD
+          5 Sample SMD Plans
         </Button>
         <Button
           variant="link"
           className="toAnalysisButtons"
-          onClick={() => toRandom(selectedState, "Random MMD")}
+          onClick={() => toRandom(selectedState, "5 Sample MMD Plans")}
         >
-          Random MMD
+          5 Sample MMD Plans
+        </Button>
+        <Button
+          variant="link"
+          className="toAnalysisButtons"
+          onClick={() => toCompareCurrent(selectedState, "Current SMD vs. Average MMD")}
+        >
+          Current SMD vs. Average MMD
         </Button>
       </div>
     </Modal>

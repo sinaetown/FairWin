@@ -10,9 +10,9 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const SeatVoteCurve = ({ data, formatYAxisTick }) => {
+const SeatVoteCurve = ({ data }) => {
   return (
-    <ResponsiveContainer className="responsiveContainer">
+    <ResponsiveContainer>
       <LineChart
         data={data}
         margin={{
@@ -26,19 +26,29 @@ const SeatVoteCurve = ({ data, formatYAxisTick }) => {
         <XAxis
           domain={[0, 1]}
           tickFormatter={(tick) => {
-            return `${((tick * 100) / (data.length - 1)).toFixed(0)}%`;
+            return `${((tick * 100) / data.length).toFixed(0)}%`;
           }}
         />
-        <YAxis domain={[0, 1]} tickFormatter={formatYAxisTick} />
+        <YAxis
+          domain={[0, 100]}
+          tickFormatter={(tick) => {
+            return `${tick.toFixed(0)}%`;
+          }}
+        />
         <Tooltip />
         <Legend />
         <Line
           type="monotone"
-          dataKey="democrats"
-          stroke="blue"
-          activeDot={{ r: 8 }}
+          dataKey="Democrats"
+          stroke="#6a9bd1"
+          activeDot={{ r: 5 }}
         />
-        <Line type="monotone" dataKey="republicans" stroke="red" />
+        <Line
+          type="monotone"
+          dataKey="Republicans"
+          stroke="#ff4c4c"
+          activeDot={{ r: 5 }}
+        />
       </LineChart>
     </ResponsiveContainer>
   );
