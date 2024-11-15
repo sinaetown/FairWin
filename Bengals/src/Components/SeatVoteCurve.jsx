@@ -24,7 +24,7 @@ const SeatVoteCurve = ({ data }) => {
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
-          domain={[0, 1]}
+          dataKey="name"
           tickFormatter={(tick) => {
             return `${((tick * 100) / data.length).toFixed(0)}%`;
           }}
@@ -39,13 +39,13 @@ const SeatVoteCurve = ({ data }) => {
         <Legend />
         <Line
           type="monotone"
-          dataKey="Democrats"
+          dataKey="democratic"
           stroke="#6a9bd1"
           activeDot={{ r: 5 }}
         />
         <Line
           type="monotone"
-          dataKey="Republicans"
+          dataKey="republican"
           stroke="#ff4c4c"
           activeDot={{ r: 5 }}
         />

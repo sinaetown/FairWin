@@ -1,32 +1,35 @@
-import React, { useState } from "react";
-import { Table } from "react-bootstrap";
-import OpportunityBar from "./Components/OpportunityBar";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useParams } from "react-router-dom";
+import { Nav, Row, Col } from "react-bootstrap";
+import CompareCurrentBar from "./Components/CompareCurrentBar";
 import Sidebar from "./Components/Sidebar";
 import Brand from "./Components/Brand";
 
 function CompareCurrent() {
-  const { selectedState } = location.state || {};
+  const { id: selectedState } = useParams();
   const [showSideBar, setShowSideBar] = useState(false);
-  const [rebublicansBar, setRebublicansBar] = useState([]);
+  const [republicansBar, setRepublicansBar] = useState([]);
   const [democratsBar, setDemocratsBar] = useState([]);
   const [opDistrictBar, setOPDistrictBar] = useState([]);
   const [opRepresentativesBar, setOPRepresentativesBar] = useState([]);
+  const [showGraph, setShowGraph] = useState("Democrats & Republicans Bar");
 
   useEffect(() => {
     const api = {
-      Mississippi: { stateInfo: "/MS/compare" },
-      Alabama: { stateInfo: "/AL/compare" },
-      Pennsylvania: { stateInfo: "/PA/compare" },
+      Mississippi: "/MS/compare",
+      Alabama: "/AL/compare",
+      Pennsylvania: "/PA/compare",
     };
     const initValue = () => {
-      setRebublicansBar([]);
+      setRepublicansBar([]);
       setDemocratsBar([]);
       setOPDistrictBar([]);
       setOPRepresentativesBar([]);
     };
     const setValue = (compareCurrent) => {
-      let features = compareCurrent.data;
-      setRebublicansBar(features["republicans_bar"]);
+      const features = compareCurrent.data;
+      setRepublicansBar(features["republicans_bar"]);
       setDemocratsBar(features["democrats_bar"]);
       setOPDistrictBar(features["op_districts_bar"]);
       setOPRepresentativesBar(features["op_representatives_bar"]);
@@ -49,33 +52,96 @@ function CompareCurrent() {
     <>
       <div className="body">
         <Sidebar show={showSideBar} handleClose={() => setShowSideBar(false)} />
-        <Brand />
+        <Brand
+          title={selectedState.toUpperCase()}
+          className={"text_selectedState_Analysis"}
+        />
         <div className="body_analysis">
-          <Table striped bordered hover className="table_compareCurrent">
-            <tr>
-              <td>
-                {" "}
-                <OpportunityBar keyName="Republicans" data={rebublicansBar} />
-              </td>
-              <td>
-                {" "}
-                <OpportunityBar keyName="Democrats" data={democratsBar} />
-              </td>
-            </tr>
-            <tr>
-              <td>
-                {" "}
-                <OpportunityBar keyName="op_districts" data={opDistrictBar} />
-              </td>
-              <td>
-                {" "}
-                <OpportunityBar
-                  keyName="op_representatives"
-                  data={opRepresentativesBar}
-                />
-              </td>
-            </tr>
-          </Table>
+          <Row className="contents_Ensemble">
+            <Row className="item_contents_Ensemble">
+              <div className="text_contentsTitle_Analysis">
+                Current SMD vs. Average MMD
+              </div>
+            </Row>
+            <Row className="item_contents_Ensemble">
+              <Nav
+                variant="tabs"
+                defaultActiveKey="link-1"
+                className="navbar_Ensemble"
+              >
+                <Nav.Item>
+                  <Nav.Link
+                    eventKey="link-1"
+                    className="text_navElement_analysis"
+                    onClick={() => setShowGraph("Democrats & Republicans Bar")}
+                  >
+                    Democrats & Republicans Bar
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link
+                    eventKey="link-3"
+                    className="text_navElement_analysis"
+                    onClick={() => setShowGraph("Opportunity Bar")}
+                  >
+                    Opportunity Bar
+                  </Nav.Link>
+                </Nav.Item>
+              </Nav>
+            </Row>
+            {showGraph == "Democrats & Republicans Bar" && (
+              <div>
+                <div className="text_SMDvsMMD">Democrats & Republicans</div>
+                <Row className="item_contents_Ensemble">
+                  <Col
+                    className="item_plot_Ensemble"
+                    style={{ width: "100%", height: 330 }}
+                  >
+                    <CompareCurrentBar
+                      keyName="Democrats"
+                      data={democratsBar}
+                    />
+                  </Col>
+                  <Col
+                    className="item_plot_Ensemble"
+                    style={{ width: "100%", height: 330 }}
+                  >
+                    <CompareCurrentBar
+                      keyName="Republicans"
+                      data={republicansBar}
+                    />
+                  </Col>
+                </Row>
+              </div>
+            )}
+            {showGraph == "Opportunity Bar" && (
+              <div>
+                <div className="text_SMDvsMMD">
+                  Opportunity District & Representatives
+                </div>
+                <Row className="item_contents_Ensemble">
+                  <Col
+                    className="item_plot_Ensemble"
+                    style={{ width: "100%", height: 330 }}
+                  >
+                    <CompareCurrentBar
+                      keyName="op_districts"
+                      data={opDistrictBar}
+                    />
+                  </Col>
+                  <Col
+                    className="item_plot_Ensemble"
+                    style={{ width: "100%", height: 330 }}
+                  >
+                    <CompareCurrentBar
+                      keyName="op_representatives"
+                      data={opRepresentativesBar}
+                    />
+                  </Col>
+                </Row>
+              </div>
+            )}
+          </Row>
         </div>
       </div>
     </>

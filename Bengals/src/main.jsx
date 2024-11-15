@@ -1,7 +1,10 @@
 import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./Home.jsx";
+import StateInfo from "./StateInfo.jsx";
 import Ensemble from "./Ensemble.jsx";
+import EnsembleSMD from "./EnsembleSMD.jsx";
+import EnsembleMMD from "./EnsembleMMD.jsx";
 import Random from "./Random.jsx";
 import CompareCurrent from "./CompareCurrent.jsx";
 import About from "./About.jsx";
@@ -13,9 +16,13 @@ createRoot(document.getElementById("root")).render(
   <Router>
     <Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/Ensemble/:id" element={<Ensemble />} />
-      <Route path="/Random/:id" element={<Random />} />
-      <Route path="/CompareCurrent/:id" element={<CompareCurrent />} />
+      <Route path="/:id" element={<StateInfo />} />
+      <Route path="/:id/ensemble" element={<Ensemble />} />
+      <Route path="/:id/ensemble/smd" element={<EnsembleSMD />} />
+      <Route path="/:id/ensemble/mmd" element={<EnsembleMMD />} />
+      <Route path="/:id/random/smd" element={<Random />} />
+      <Route path="/:id/random/mmd" element={<Random />} />
+      <Route path="/:id/compareCurrent" element={<CompareCurrent />} />
       <Route path="/about" element={<About />} />
     </Routes>
   </Router>

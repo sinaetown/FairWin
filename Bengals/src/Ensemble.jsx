@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import StateInfoTable from "./Components/StateInfoTable";
 import testJson from "./assets/blank_ensemble.json";
 import Sidebar from "./Components/Sidebar";
@@ -12,34 +12,14 @@ import PoliticalBarChart from "./Components/PoliticalBarChart";
 import OpportunityBar from "./Components/OpportunityBar";
 import TabDropDown from "./Components/TabDropDown";
 
-const useBoxPlot = (boxPlots) => {
-  const data = useMemo(
-    () =>
-      boxPlots.map((v) => {
-        return {
-          name: v.name,
-          min: v.min,
-          bottomWhisker: v.lowerQuartile - v.min,
-          bottomBox: v.median - v.lowerQuartile,
-          topBox: v.upperQuartile - v.median,
-          topWhisker: v.max - v.upperQuartile,
-          average: v.average,
-          size: 250,
-        };
-      }),
-    [boxPlots]
-  );
-  return data;
-};
 function Ensemble() {
   const [showSideBar, setShowSideBar] = useState(false);
   const [geoFeature, setGeoFeature] = useState([]);
   const [mapKey, setMapKey] = useState(0);
-  const location = useLocation();
-  const { selectedState, option } = location.state || {};
+  const { id: selectedState } = useParams();
   const [showGraph, setShowGraph] = useState("Box & Whisker");
   const [showMinority, setShowMinority] = useState("blk");
-  const [boxWhisker_data, setBoxWhisker] = useState({
+  const [boxWhisker, setBoxWhisker] = useState({
     SMD: [],
     MMD: [],
   });
@@ -132,16 +112,21 @@ function Ensemble() {
     };
     fetchData();
   }, [selectedState]);
-  const boxWhiskerSMD = useBoxPlot(boxWhisker_data.SMD);
-  const boxWhiskerMMD = useBoxPlot(boxWhisker_data.MMD);
-
   return (
     <>
       <div className="body">
         <Sidebar show={showSideBar} handleClose={() => setShowSideBar(false)} />
-        <Brand title={option} className={"text_contentsTitle_Ensemble"} />
+        <Brand
+          title={selectedState.toUpperCase()}
+          className={"text_selectedState_Analysis"}
+        />
         <div className="body_analysis">
           <Row className="contents_Ensemble">
+            <Row className="item_contents_Ensemble">
+              <div className="text_contentsTitle_Analysis">
+                Ensemble SMD & MMD
+              </div>
+            </Row>
             <Col xs={12} md={6} className="col_stateInformation">
               <Row className="item_contents_Ensemble">
                 <StateInfoTable
@@ -172,7 +157,7 @@ function Ensemble() {
                     className="text_navElement_analysis"
                     onClick={() => setShowGraph("SeatVoteCurve")}
                   >
-                    SeatVoteCurve
+                    Seats-Votes Curve
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
@@ -210,13 +195,13 @@ function Ensemble() {
                   className="item_plot_Ensemble"
                   style={{ width: "100%", height: 330 }}
                 >
-                  <BoxWhisker data={boxWhiskerSMD} />
+                  <BoxWhisker data={boxWhisker.SMD} option={"smd"} />
                 </Col>
                 <Col
                   className="item_plot_Ensemble"
                   style={{ width: "100%", height: 330 }}
                 >
-                  <BoxWhisker data={boxWhiskerMMD} />
+                  <BoxWhisker data={boxWhisker.MMD} option={"mmd"} />
                 </Col>
               </Row>
             )}

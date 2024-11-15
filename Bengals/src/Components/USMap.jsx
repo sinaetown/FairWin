@@ -6,31 +6,40 @@ const USMap = ({
   selectedState,
   setHoveredLocation,
   setSelectedState,
+  toSateInfo,
 }) => {
-  const customStates = ["Alabama", "Mississippi", "Pennsylvania"];
+  const customStates = ["MISSISSIPPI", "ALABAMA", "PENNSYLVANIA"];
 
   return (
     <svg viewBox={usaMapData.viewBox} xmlns="http://www.w3.org/2000/svg">
       {usaMapData.locations.map((location) => {
-        const isCustom = customStates.includes(location.name);
+        let capitalSelectedState = location.name.toUpperCase();
+        const isCustom = customStates.includes(capitalSelectedState);
         return (
           <path
             key={location.id}
             d={location.path}
             fill={
-              hoveredLocation === location.name
+              hoveredLocation === capitalSelectedState
                 ? "rgba(236, 31, 12, 0.7)"
-                : selectedState === location.name
+                : selectedState === capitalSelectedState
                 ? "rgb(236, 31, 12)"
                 : isCustom
                 ? "#EEE"
                 : "rgb(135, 135, 135)"
             }
             stroke="rgba(40, 38, 38, 1.0)"
-            strokeWidth={selectedState === location.name ? 3.0 : 0.9}
-            onMouseEnter={() => setHoveredLocation(location.name)}
+            strokeWidth={selectedState === capitalSelectedState ? 3.0 : 0.9}
+            onMouseEnter={() => setHoveredLocation(capitalSelectedState)}
             onMouseLeave={() => setHoveredLocation(null)}
-            onClick={isCustom ? () => setSelectedState(location.name) : null}
+            onClick={
+              isCustom
+                ? () => {
+                    setSelectedState(capitalSelectedState);
+                    toSateInfo(location.id);
+                  }
+                : null
+            }
             style={{ cursor: "pointer" }}
           />
         );

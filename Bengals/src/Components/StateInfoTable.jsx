@@ -2,9 +2,12 @@ import React from "react";
 import { Table } from "react-bootstrap";
 
 const StateInfoTable = ({ stateInfo, className }) => {
-  const toPercent = (value) => {
-    return `${(value * 100).toFixed(0)}%`;
-  };
+  // const toPercent = (value) => {
+  //   return `${(value * 100).toFixed(0)}%`;
+  // };
+  // const toPercentWithPoint = (value) => {
+  //   return `${(value * 100).toFixed(1)}%`;
+  // };
   return (
     <Table striped bordered hover className={className}>
       <thead>
@@ -19,17 +22,15 @@ const StateInfoTable = ({ stateInfo, className }) => {
           <td>{stateInfo.totalSeats}</td>
           <td className="table_stateInfo_col1">Party Splits</td>
           <td>
-            Democrat: {toPercent(stateInfo.Democrat)}; <br/>Republican:{" "}
-            {toPercent(stateInfo.Republican)}
+            Democrat: {stateInfo.Democrat}; <br />
+            Republican: {stateInfo.Republican}
           </td>
         </tr>
         <tr>
           <td className="table_stateInfo_col1">Minorities Split</td>
           <td colSpan={3}>
-            Asian: {toPercent(stateInfo.Minorities.asn)}; Black:{" "}
-            {toPercent(stateInfo.Minorities.blk)}; Hispanic:{" "}
-            {toPercent(stateInfo.Minorities.hisp)}; Non_White:{" "}
-            {toPercent(stateInfo.Minorities.non_white)}
+            Asian: {stateInfo.Minorities.asn}; Black: {stateInfo.Minorities.blk}
+            ; Hispanic: {stateInfo.Minorities.hisp}
           </td>
         </tr>
       </thead>

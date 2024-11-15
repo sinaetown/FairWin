@@ -25,11 +25,11 @@ const MinorityBarChart = ({ data }) => {
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
         <YAxis
-          tickFormatter={(value) => {
-            return value >= 10000
-              ? `${Math.round(value / 10000)}M`
-              : value.toLocaleString();
-          }}
+        // tickFormatter={(value) => {
+        //   return value >= 10000
+        //     ? `${Math.round(value / 1000000)}M`
+        //     : value.toLocaleString();
+        // }}
         />
         <Tooltip />
         <Legend />

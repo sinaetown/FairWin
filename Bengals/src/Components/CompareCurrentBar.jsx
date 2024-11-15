@@ -1,16 +1,25 @@
 import React from "react";
 import {
   BarChart,
-  Bar,
+  CartesianGrid,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   Legend,
+  Bar,
   ResponsiveContainer,
 } from "recharts";
 
-const PoliticalBarChart = ({ data }) => {
+const CompareCurrentBar = ({ keyName, data }) => {
+  const setColor = () => {
+    if (keyName == "republican") {
+      return "#ff4c4c";
+    } else if (keyName == "democratic") {
+      return "#6a9bd1";
+    } else {
+      return "#8884d8";
+    }
+  };
   return (
     <ResponsiveContainer>
       <BarChart
@@ -24,20 +33,13 @@ const PoliticalBarChart = ({ data }) => {
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
-        <YAxis
-        // tickFormatter={(value) => {
-        //   return value >= 10000
-        //     ? `${Math.round(value / 1000000)}M`
-        //     : value.toLocaleString();
-        // }}
-        />
+        <YAxis domain={[0, 1]} tickFormatter={(tick) => tick.toFixed(2)} />
         <Tooltip />
         <Legend />
-        <Bar dataKey="democratic" fill="#6a9bd1" />
-        <Bar dataKey="republican" fill="#ff4c4c" />
+        <Bar dataKey={keyName} fill={setColor()} />
       </BarChart>
     </ResponsiveContainer>
   );
 };
 
-export default PoliticalBarChart;
+export default CompareCurrentBar;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Row, Col, Container, Button } from "react-bootstrap";
+import { Row, Col, Container, Dropdown } from "react-bootstrap";
 
 import arrowCircleIcon from "./assets/arrowCircleIcon.svg";
 import circleIcon from "./assets/circleIcon.svg";
@@ -14,16 +14,11 @@ function Home() {
   const [hoveredLocation, setHoveredLocation] = useState(null);
   const [showButtons, setShowButtons] = useState(false);
   const [showSideBar, setShowSideBar] = useState(false);
-  const customStates = ["Alabama", "Mississippi", "Pennsylvania"];
+  const customStates = ["MISSISSIPPI", "ALABAMA", "PENNSYLVANIA"];
+  const abbreviation = { MISSISSIPPI: "ms", ALABAMA: "al", PENNSYLVANIA: "pa" };
   const navigate = useNavigate();
-  const toEnsemble = (state, option) => {
-    navigate(`/Ensemble/${state}`, { state: { selectedState, option } });
-  };
-  const toRandom = (state, option) => {
-    navigate(`/Random/${state}`, { state: { selectedState, option } });
-  };
-  const toCompareCurrent = (state, option) => {
-    navigate(`/CompareCurrent/${state}`, { state: { selectedState, option } });
+  const toSateInfo = (state) => {
+    navigate(`/${state}`);
   };
   return (
     <>
@@ -34,9 +29,7 @@ function Home() {
           <Container>
             <div className="text_question">IS A FAIR VOTE BEING HELD?</div>
             <div className="text_selectedState">
-              {hoveredLocation
-                ? hoveredLocation.toUpperCase()
-                : selectedState.toUpperCase()}
+              {hoveredLocation ? hoveredLocation : selectedState}
             </div>
             <Row>
               <Col xs={1}>
@@ -54,41 +47,47 @@ function Home() {
                   </span>
                 </div>
               </Col>
-              <Col xs={10}>
+              <Col xs={9}>
                 <Container className="map_us">
                   <USMap
                     hoveredLocation={hoveredLocation}
                     selectedState={selectedState}
                     setHoveredLocation={setHoveredLocation}
                     setSelectedState={setSelectedState}
+                    toSateInfo={toSateInfo}
                   />
                 </Container>
               </Col>
-              <Col xs={1}>
-                {customStates.includes(selectedState) && (
-                  <div className="button_toAnalysis">
-                    <Button variant="link" onClick={setShowButtons}>
-                      <img
-                        alt=""
-                        src={arrowCircleIcon}
-                        width="45px"
-                        height="45px"
-                        className="svgIcon"
-                      />
-                    </Button>
-                  </div>
-                )}
+              <Col xs={2}>
+                <Dropdown className="button_toAnalysis">
+                  <Dropdown.Toggle variant="dark">
+                    Select a State
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu show>
+                    {customStates.map((state) => (
+                      <Dropdown.Item
+                        key={state}
+                        onClick={() => {
+                          setSelectedState(state);
+                          toSateInfo(abbreviation[state]);
+                        }}
+                      >
+                        {state}
+                      </Dropdown.Item>
+                    ))}
+                  </Dropdown.Menu>
+                </Dropdown>
               </Col>
             </Row>
           </Container>
-          <ToAnalysisButtons
+          {/* <ToAnalysisButtons
             show={showButtons}
             handleClose={() => setShowButtons(false)}
             toEnsemble={toEnsemble}
             toRandom={toRandom}
             selectedState={selectedState}
             toCompareCurrent={toCompareCurrent}
-          />
+          /> */}
         </div>
       </div>
     </>
