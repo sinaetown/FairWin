@@ -21,13 +21,12 @@ const OpportunityDistribution = ({
       try {
         const response = await axios.get(`http://localhost:8080${api}`);
         setData(response.data);
-        console.log("Connected!");
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     getData();
-  }, [selectedStateAbbr, SMDMMD]);
+  }, [selectedStateAbbr, SMDMMD, showGraph]);
 
   return (
     <Row className="item_contents_Random">

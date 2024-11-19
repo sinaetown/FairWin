@@ -102,9 +102,7 @@ function StateInfo() {
                       <div className="info_subTitle">Total Population</div>
                       <div>
                         <span className="info_data">
-                          {data.total_pop
-                            ? data.total_pop.toLocaleString()
-                            : "N/A"}
+                          {data.total_pop ? data.total_pop.toLocaleString() : 0}
                         </span>{" "}
                         people
                       </div>
@@ -113,7 +111,7 @@ function StateInfo() {
                       <div className="info_subTitle">Total Seats</div>
                       <div>
                         <span className="info_data">
-                          {data.total_seats || "N/A"}
+                          {data.total_seats || 0}
                         </span>{" "}
                         seats
                       </div>
@@ -124,12 +122,12 @@ function StateInfo() {
                       <div className="info_subTitle">2020 Party Splits</div>
                       <div>
                         <span className="info_data">
-                          {data.republican || "N/A"}
+                          {data.republican || 0}
                         </span>{" "}
                         Republicans
                         <br />
                         <span className="info_data">
-                          {data.democratic || "N/A"}
+                          {data.democratic || 0}
                         </span>{" "}
                         Democrats
                       </div>
@@ -138,17 +136,17 @@ function StateInfo() {
                       <div className="info_subTitle">Minority Population</div>
                       <div>
                         <span className="info_data">
-                          {data.racial_pop?.asn || "N/A"}
+                          {data.racial_pop?.blk.toLocaleString() || 0}
                         </span>{" "}
                         African Americans
                         <br />
                         <span className="info_data">
-                          {data.racial_pop?.asn || "N/A"}
+                          {data.racial_pop?.asn.toLocaleString() || 0}
                         </span>{" "}
                         Asians
                         <br />
                         <span className="info_data">
-                          {data.racial_pop?.hisp || "N/A"}
+                          {data.racial_pop?.hsp.toLocaleString() || 0}
                         </span>{" "}
                         Hispanics
                       </div>

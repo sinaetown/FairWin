@@ -42,10 +42,10 @@ function PartySplitsDistribution({ title, selectedStateAbbr, SMDMMD }) {
           </thead>
           <tbody>
             <tr>
-              <td>{data.vote_share || "N/A"}% (Fixed)</td>
+              <td>50%(fixed)</td>
               <td>
-                Rep = {data.rep_seat_share || "N/A"}%, Dem ={" "}
-                {data.dem_seat_share || "N/A"}%
+                Rep = {data.avg_seat_share?.republican ?? 0}%, Dem ={" "}
+                {data.avg_seat_share?.democratic ?? 0}%
               </td>
             </tr>
           </tbody>

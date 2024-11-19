@@ -27,7 +27,7 @@ function PartyPopulationDistribution({
       }
     };
     getData();
-  }, [selectedStateAbbr, SMDMMD]);
+  }, [selectedStateAbbr, SMDMMD, showGraph]);
 
   return (
     <Row className="item_contents_Random">

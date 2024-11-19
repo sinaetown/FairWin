@@ -503,6 +503,7 @@ h1 span {
     /* min-width: 400px; */
     justify-content: center;
     margin-left: 3%;
+    margin-bottom: 2%
 }
 
 .col_districtInformation {
@@ -518,6 +519,7 @@ h1 span {
     margin-right: 3%;
     padding: 0px;
     flex: 1;
+    margin-bottom: 2%;
     /* min-width: 400px; */
     justify-content: center;
 }

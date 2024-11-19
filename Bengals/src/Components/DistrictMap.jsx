@@ -12,7 +12,7 @@ const DistrictMap = ({ selectedState, mapKey, data }) => {
     }
   }, [selectedState]);
 
-  const onEachDistrict = (district, layer, index) => {
+  const onEachDistrict = (district, layer) => {
     const properties = district["properties"];
     let centroid = properties["centroid"].split(",");
     const latLng = L.latLng(parseFloat(centroid[1]), parseFloat(centroid[0]));
@@ -36,7 +36,7 @@ const DistrictMap = ({ selectedState, mapKey, data }) => {
     const onAdd = (e) => {
       const label = L.divIcon({
         className: "district-label",
-        html: `<div style="font-size: 20px; color: black;">${index + 1}</div>`,
+        html: `<div style="font-size: 20px; color: black;"></div>`,
       });
       L.marker(latLng, { icon: label }).addTo(layer._map);
     };
@@ -64,7 +64,7 @@ const DistrictMap = ({ selectedState, mapKey, data }) => {
         <GeoJSON
           data={data}
           onEachFeature={(district, layer) => {
-            onEachDistrict(district, layer, data.indexOf(district));
+            onEachDistrict(district, layer);
           }}
         />
       </MapContainer>

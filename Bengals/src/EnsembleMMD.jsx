@@ -35,7 +35,7 @@ function EnsembleMMD() {
         const sampleMMDMap = await axios.get(
           `http://localhost:8080${api_sampleMMDMap}`
         );
-        setGeoFeature(sampleMMDMap.data["features"]);
+        setGeoFeature(sampleMMDMap.data.features || []);
         setMapKey(mapKey + 1);
         console.log("Connected!");
       } catch (error) {
@@ -186,7 +186,7 @@ function EnsembleMMD() {
             <Col xs={12} md={6} className="col_stateInformation">
               <DistrictMapTitle
                 title={"Sample MMD Plan"}
-                address={`/${selectedState}`}
+                address={`/${selectedStateAbbr}`}
               />
               <Row className="item_plot_Random">
                 <DistrictMap
@@ -213,6 +213,7 @@ function EnsembleMMD() {
                   setShowGraph={setShowGraph}
                   navbarItem={["African American", "Asian", "Hispanic"]}
                   SMDMMD={SMDMMD}
+                  selectedStateAbbr={selectedStateAbbr}
                 />
               )}
               {showContent === "Opportunity Districts & Representatives" && (
@@ -220,8 +221,9 @@ function EnsembleMMD() {
                   title={"Opportunity Districts & Representatives"}
                   showGraph={showGraph}
                   setShowGraph={setShowGraph}
-                  navbarItem={["African American", "Hispanic"]}
+                  navbarItem={["African American", "Asian", "Hispanic"]}
                   SMDMMD={SMDMMD}
+                  selectedStateAbbr={selectedStateAbbr}
                 />
               )}
               {/* Party Data */}

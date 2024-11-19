@@ -23,18 +23,18 @@ const RandomPlanContents = ({ title, data }) => {
                 democratic: data.democratic,
               } || {}
             }
-            numDistricts={data.republican + data.democratic || "N/A"}
-            opDistricts={data.num_op_districts || "N/A"}
-            safeDistricts={data.num_safe_districts || "N/A"}
-            opThreshold={data.op_threshold || "N/A"}
+            numDistricts={data.republican + data.democratic || 0}
+            opDistricts={data.num_op_districts || 0}
+            safeDistricts={data.num_safe_districts || 0}
+            opThreshold={data.op_threshold || 0}
           />
         )}
         {activePage === false && (
           <SeatVoteCurveInfo
             seatVoteCurveData={data.seats_votes || []}
-            bias={data.bias || "N/A"}
-            symmetry={data.symmetry || "N/A"}
-            responsiveness={data.responsiveness || "N/A"}
+            bias={data.bias || 0}
+            symmetry={data.symmetry || 0}
+            responsiveness={data.responsiveness || 0}
           />
         )}
       </Row>

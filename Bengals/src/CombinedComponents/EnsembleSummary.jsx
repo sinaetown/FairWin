@@ -42,9 +42,7 @@ const EnsembleSummary = ({ title, SMDMMD, selectedStateAbbr }) => {
               <Col className="info_item">
                 <div className="info_subTitle">Number of District Plans</div>
                 <div>
-                  <span className="info_data">
-                    {data.num_dist_plan || "N/A"}
-                  </span>{" "}
+                  <span className="info_data">{data.num_dist_plan || 0}</span>{" "}
                   plans in ensemble
                 </div>
               </Col>
@@ -54,7 +52,7 @@ const EnsembleSummary = ({ title, SMDMMD, selectedStateAbbr }) => {
                 </div>
                 <div>
                   <span className="info_data">
-                    {data.avg_min_max_diff || "N/A"}
+                    {data.avg_num_minor_representatives?.non_wht || 0}
                   </span>{" "}
                   Non-whites per plan
                 </div>
@@ -68,21 +66,21 @@ const EnsembleSummary = ({ title, SMDMMD, selectedStateAbbr }) => {
                 <div>
                   Within{" "}
                   <span className="info_data">
-                    {data.avg_num_minor_representatives || "N/A"}%
-                  </span>{" "}
-                  (± 0.5)
+                    {data.avg_min_max_diff || 0}
+                  </span>
+                  %
                 </div>
               </Col>
               <Col className="info_item">
                 <div className="info_subTitle">Average Party Split</div>
                 <div>
                   <span className="info_data">
-                    {data.avg_party_split?.republican || "N/A"}
+                    {data.avg_party_split?.republican || 0}
                   </span>{" "}
                   Republicans/state
                   <br />
                   <span className="info_data">
-                    {data.avg_party_split?.democratic || "N/A"}
+                    {data.avg_party_split?.democratic || 0}
                   </span>{" "}
                   Democrats/state
                 </div>
@@ -104,9 +102,9 @@ const EnsembleSummary = ({ title, SMDMMD, selectedStateAbbr }) => {
           </div>
           <SeatVoteCurveInfo
             seatVoteCurveData={data.seats_votes || []}
-            bias={data.bias || "N/A"}
-            symmetry={data.symmetry || "N/A"}
-            responsiveness={data.responsiveness || "N/A"}
+            bias={data.bias || 0}
+            symmetry={data.symmetry || 0}
+            responsiveness={data.responsiveness || 0}
           />
         </Row>
       )}

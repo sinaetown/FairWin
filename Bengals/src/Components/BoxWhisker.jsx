@@ -26,7 +26,7 @@ const CustomTooltip = ({ active, payload, label }) => {
         <p>{`${label}`}</p>
         <p>{`Median: ${data.median}`}</p>
         <p style={{ color: "blue" }}>{`Average: ${data.average}`}</p>
-        {data.enacted && (
+        {data.enacted !== undefined && data.enacted !== null && (
           <p style={{ color: "red" }}>{`Enacted: ${data.enacted}`}</p>
         )}
       </div>

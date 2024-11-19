@@ -37,7 +37,8 @@ function EnsembleSMD() {
         const enactedMap = await axios.get(
           `http://localhost:8080${api_enactedMap}`
         );
-        setGeoFeature(enactedMap.data["features"]);
+        setGeoFeature(enactedMap.data.features || []);
+        console.log(enactedMap.data.features);
         setMapKey(mapKey + 1);
         console.log("Connected!");
       } catch (error) {
@@ -185,7 +186,7 @@ function EnsembleSMD() {
             <Col xs={12} md={6} className="col_stateInformation">
               <DistrictMapTitle
                 title={"Enacted Plan"}
-                address={`/${selectedState}`}
+                address={`/${selectedStateAbbr}`}
               />
               <Row className="item_plot_Random">
                 <DistrictMap
@@ -220,7 +221,7 @@ function EnsembleSMD() {
                   title={"Opportunity Districts & Representatives"}
                   showGraph={showGraph}
                   setShowGraph={setShowGraph}
-                  navbarItem={["African American", "Hispanic"]}
+                  navbarItem={["African American", "Asian", "Hispanic"]}
                   SMDMMD={SMDMMD}
                   selectedStateAbbr={selectedStateAbbr}
                 />

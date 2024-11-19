@@ -58,8 +58,8 @@ function Random() {
       }/${SMDMMD}`;
       try {
         const response = await axios.get(`http://localhost:8080${api}`);
-        setData(response.data.summary);
-        setGeoFeature(response.data.features);
+        setData(response.data);
+        setGeoFeature(response.data.features || []);
         console.log("Connected!");
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -82,7 +82,7 @@ function Random() {
             <Col xs={12} md={6} className="col_stateInformation">
               <DistrictMapTitle
                 title={"Sample " + SMDMMD.toUpperCase() + " Plan"}
-                address={`/${selectedState}`}
+                address={`/${selectedStateAbbr}`}
               />
               <Row className="item_plot_Random">
                 <DistrictMap

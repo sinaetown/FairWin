@@ -24,9 +24,8 @@ const SeatVoteCurve = ({ data }) => {
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
-          dataKey="name"
           tickFormatter={(tick) => {
-            return `${((tick * 100) / data.length).toFixed(0)}%`;
+            return `${tick + 1}%`;
           }}
         />
         <YAxis

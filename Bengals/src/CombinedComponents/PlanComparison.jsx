@@ -37,14 +37,14 @@ function PlanComparison({ title, selectedStateAbbr, SMDMMD }) {
             <tr>
               <td className="table_stateInfo_col1">Party Splits</td>
               <td>
-                {data.enacted?.republican || "N/A"} Republicans
+                {data.enacted?.republican || 0} Republicans
                 <br />
-                {data.enacted?.democratic || "N/A"} Democrats
+                {data.enacted?.democratic || 0} Democrats
               </td>
               <td>
-                {data.avg_mmd?.republican || "N/A"} Republicans
+                {data.avg_mmd?.republican || 0} Republicans
                 <br />
-                {data.avg_mmd?.democratic || "N/A"} Democrats
+                {data.avg_mmd?.democratic || 0} Democrats
               </td>
             </tr>
             <tr>
@@ -54,10 +54,10 @@ function PlanComparison({ title, selectedStateAbbr, SMDMMD }) {
                 Representatives
               </td>
               <td>
-                {data.enacted?.num_op_representatives || "N/A"} representatives
+                {data.enacted?.num_op_representatives || 0} representatives
               </td>
               <td>
-                {data.avg_mmd?.num_op_representatives || "N/A"} representatives
+                {data.avg_mmd?.num_op_representatives || 0} representatives
               </td>
             </tr>
             <tr>

@@ -19,15 +19,15 @@ const RacialDistribution = ({
     const getData = async () => {
       const api = `/${selectedStateAbbr.toUpperCase()}/racialDistribution/${SMDMMD}`;
       try {
-        const data = await axios.get(`http://localhost:8080${api}`);
-        setData(data.data);
+        const response = await axios.get(`http://localhost:8080${api}`);
+        setData(response.data);
         console.log("Connected!");
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     getData();
-  }, [selectedStateAbbr, SMDMMD]);
+  }, [selectedStateAbbr, SMDMMD, showGraph]);
 
   return (
     <Row className="item_contents_Random">
@@ -40,7 +40,10 @@ const RacialDistribution = ({
           className="item_plot_Ensemble"
           style={{ width: "100%", height: 330 }}
         >
-          <BoxWhisker data={data[showGraph] || []} option={SMDMMD} />
+          <BoxWhisker
+            data={data ? data[showGraph] || [] : []}
+            option={SMDMMD}
+          />
         </Col>
       </Row>
     </Row>
