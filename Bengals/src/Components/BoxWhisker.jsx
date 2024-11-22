@@ -5,12 +5,12 @@ import {
   YAxis,
   CartesianGrid,
   ResponsiveContainer,
-  ZAxis,
   Tooltip,
   Legend,
   ComposedChart,
   Scatter,
 } from "recharts";
+
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
@@ -34,9 +34,10 @@ const CustomTooltip = ({ active, payload, label }) => {
   }
   return null;
 };
+
 function BoxWhisker({ data, option }) {
   const useBoxPlotSMD = (boxPlots) => {
-    if (option == "smd") {
+    if (option === "smd") {
       const data = useMemo(
         () =>
           boxPlots.map((v) => {
@@ -77,7 +78,28 @@ function BoxWhisker({ data, option }) {
       return data;
     }
   };
-  // Horizontal Line
+
+  const maxValue = Math.max(
+    ...data.map((item) => item.max),
+    ...data.map((item) => item.enacted || 0)
+  );
+
+  const getYAxisDomain = () => {
+    if (maxValue < 0.1) {
+      return [0, 0.1];
+    } else if (maxValue >= 0.1 && maxValue < 0.2) {
+      return [0, 0.2];
+    } else if (maxValue >= 0.2 && maxValue < 0.4) {
+      return [0, 0.4];
+    } else if (maxValue >= 0.4 && maxValue < 0.6) {
+      return [0, 0.6];
+    } else if (maxValue >= 0.6 && maxValue < 0.8) {
+      return [0, 0.8];
+    } else {
+      return [0, 1];
+    }
+  };
+
   const HorizonBar = (props) => {
     const { x, y, width, height } = props;
     if (x == null || y == null || width == null || height == null) {
@@ -95,7 +117,6 @@ function BoxWhisker({ data, option }) {
     );
   };
 
-  // Whisker
   const DotBar = (props) => {
     const { x, y, width, height } = props;
 
@@ -114,20 +135,20 @@ function BoxWhisker({ data, option }) {
       />
     );
   };
+
   const legendPayload = () => {
-    if (option == "smd") {
+    if (option === "smd") {
       return [
         { value: "Box", type: "rect", id: "bottomBox", color: "#8884d8" },
         { value: "Enacted", type: "scatter", id: "enacted", color: "red" },
-        // { value: "Average", type: "scatter", id: "average", color: "blue" },
       ];
     } else {
       return [
         { value: "Box", type: "rect", id: "bottomBox", color: "#8884d8" },
-        // { value: "Average", type: "scatter", id: "average", color: "blue" }
       ];
     }
   };
+
   return (
     <ResponsiveContainer>
       <ComposedChart data={useBoxPlotSMD(data)}>
@@ -141,19 +162,16 @@ function BoxWhisker({ data, option }) {
         <Bar stackId={"a"} dataKey={"topWhisker"} shape={<DotBar />} />
         <Bar stackId={"a"} dataKey={"bar"} shape={<HorizonBar />} />
         <Scatter dataKey={"enacted"} fill={"red"} stroke={"#FFF"} />
-        {/* <Scatter dataKey={"average"} fill={"blue"} stroke={"#FFF"} /> */}
-        {/* <ZAxis type="number" dataKey="size" range={[0, 250]} /> */}
         <Tooltip content={<CustomTooltip />} />
         <Legend payload={legendPayload()} />
         <XAxis dataKey="name" />
         <YAxis
-          domain={[0, 1]}
-          tickFormatter={(tick) => {
-            return `${(tick * 100).toFixed(0)}%`;
-          }}
+          domain={getYAxisDomain()}
+          tickFormatter={(tick) => `${(tick * 100).toFixed(0)}%`}
         />
       </ComposedChart>
     </ResponsiveContainer>
   );
 }
+
 export default BoxWhisker;

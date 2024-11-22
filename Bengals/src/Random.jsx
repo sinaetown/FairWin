@@ -22,16 +22,16 @@ function Random() {
   const randomPlans = [
     "Highest Republican Split",
     "Highest Democratic Split",
+    "Highest Non-White Ratio",
+    "Highest White Ratio",
     "Highest Opportunity District",
-    "Lowest Opportunity District",
-    "Highest Bias",
   ];
   const apis = {
     "Highest Republican Split": "rep",
     "Highest Democratic Split": "dem",
+    "Highest Non-White Ratio": "non_wht_max",
+    "Highest White Ratio": "wht_max",
     "Highest Opportunity District": "op_max",
-    "Lowest Opportunity District": "op_min",
-    "Highest Bias": "bias",
   };
   const [planInfo, setPlanInfo] = useState({
     numDistricts: 0,
@@ -60,6 +60,7 @@ function Random() {
         const response = await axios.get(`http://localhost:8080${api}`);
         setData(response.data);
         setGeoFeature(response.data.features || []);
+        setMapKey((prevKey) => prevKey + 1);
         console.log("Connected!");
       } catch (error) {
         console.error("Error fetching data:", error);

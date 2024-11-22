@@ -13,7 +13,6 @@ function PartyPopulationDistribution({
   SMDMMD,
 }) {
   const [data, setData] = useState({});
-
   useEffect(() => {
     setData({});
     const getData = async () => {

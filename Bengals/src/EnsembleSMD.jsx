@@ -21,7 +21,9 @@ function EnsembleSMD() {
   const selectedState = abbreviation[selectedStateAbbr];
   const [showSideBar, setShowSideBar] = useState(false);
   const [geoFeature, setGeoFeature] = useState([]);
-  const [showGraph, setShowGraph] = useState("blk");
+  const [showRacialGraph1, setShowRacialGraph1] = useState("blk");
+  const [showRacialGraph2, setShowRacialGraph2] = useState("blk");
+  const [showPartyGraph, setShowPartyGraph] = useState("republican");
   const [showContent, setShowContent] = useState("Ensemble Summary");
   const [mapKey, setMapKey] = useState(0);
   const seatVoteCurveData = {};
@@ -209,8 +211,8 @@ function EnsembleSMD() {
               {showContent === "Distribution of Racial Population" && (
                 <RacialDistribution
                   title={"Distribution of Racial Population"}
-                  showGraph={showGraph}
-                  setShowGraph={setShowGraph}
+                  showGraph={showRacialGraph1}
+                  setShowGraph={setShowRacialGraph1}
                   navbarItem={["African American", "Asian", "Hispanic"]}
                   SMDMMD={SMDMMD}
                   selectedStateAbbr={selectedStateAbbr}
@@ -219,8 +221,8 @@ function EnsembleSMD() {
               {showContent === "Opportunity Districts & Representatives" && (
                 <OpportunityDistribution
                   title={"Opportunity Districts & Representatives"}
-                  showGraph={showGraph}
-                  setShowGraph={setShowGraph}
+                  showGraph={showRacialGraph2}
+                  setShowGraph={setShowRacialGraph2}
                   navbarItem={["African American", "Asian", "Hispanic"]}
                   SMDMMD={SMDMMD}
                   selectedStateAbbr={selectedStateAbbr}
@@ -230,8 +232,8 @@ function EnsembleSMD() {
               {showContent === "Distribution of Party Population" && (
                 <PartyPopulationDistribution
                   title={"Distribution of Party Population"}
-                  showGraph={showGraph}
-                  setShowGraph={setShowGraph}
+                  showGraph={showPartyGraph}
+                  setShowGraph={setShowPartyGraph}
                   navbarItem={["Republican", "Democratic"]}
                   SMDMMD={SMDMMD}
                   selectedStateAbbr={selectedStateAbbr}

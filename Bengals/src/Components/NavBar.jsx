@@ -14,8 +14,8 @@ const NavBar = ({ setShowContent, simpleItem, dropDown, navigateItem }) => {
     "Highest Republican Split": "Highest Republican Split",
     "Highest Democratic Split": "Highest Democratic Split",
     "Highest Opportunity District": "Highest Opportunity District",
-    "Lowest Opportunity District": "Lowest Opportunity District",
-    "Highest Bias": "Highest Bias",
+    "Highest Non-White Ratio": "Highest Non-White Ratio",
+    "Highest White Ratio": "Highest White Ratio",
     "Ensemble Summary": "Ensemble Summary",
     "Distribution of Racial Population": "Distribution of Racial Population",
     "Opportunity Districts & Representatives":

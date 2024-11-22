@@ -15,20 +15,7 @@ const RandomPlanContents = ({ title, data }) => {
           activePage={activePage}
           onPageChange={setActivePage}
         />
-        {activePage === true && (
-          <RandomPlanTable
-            partySplit={
-              {
-                republican: data.republican,
-                democratic: data.democratic,
-              } || {}
-            }
-            numDistricts={data.republican + data.democratic || 0}
-            opDistricts={data.num_op_districts || 0}
-            safeDistricts={data.num_safe_districts || 0}
-            opThreshold={data.op_threshold || 0}
-          />
-        )}
+        {activePage === true && <RandomPlanTable data={data || {}} />}
         {activePage === false && (
           <SeatVoteCurveInfo
             seatVoteCurveData={data.seats_votes || []}
