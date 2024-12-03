@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-import Sidebar from "./Components/Sidebar";
-import Brand from "./Components/Brand";
+import SideBar from "./Components/UI/SideBar";
+import Brand from "./Components/UI/Brand";
 
-function About() {
+const About = () => {
   const [showSideBar, setShowSideBar] = useState(false);
+
   return (
     <>
       <div className="body">
-        <Sidebar show={showSideBar} handleClose={() => setShowSideBar(false)} />
+        <SideBar show={showSideBar} handleClose={() => setShowSideBar(false)} />
         <Brand />
         <div className="text_aboutContent">
           <h1>ABOUT FAIRWIN project</h1>
@@ -36,6 +37,6 @@ function About() {
       </div>
     </>
   );
-}
+};
 
 export default About;

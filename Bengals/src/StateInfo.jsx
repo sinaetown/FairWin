@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import Sidebar from "./Components/Sidebar";
+import SideBar from "./Components/UI/SideBar";
 import { Row, Col } from "react-bootstrap";
-import DistrictMap from "./Components/DistrictMap";
-import Brand from "./Components/Brand";
-import NavBar from "./Components/NavBar";
-import DistrictMapTitle from "./CombinedComponents/DistrictMapTitle";
+import DistrictMap from "./Components/Visualization/DistrictMap";
+import Brand from "./Components/UI/Brand";
+import NavBar from "./Components/UI/NavBar";
+import DistrictMapTitle from "./Components/Pages/DistrictMapTitle";
 
-function StateInfo() {
+const StateInfo = () => {
   const abbreviation = { ms: "MISSISSIPPI", al: "ALABAMA", pa: "PENNSYLVANIA" };
   const { id: selectedStateAbbr } = useParams();
   const selectedState = abbreviation[selectedStateAbbr] || "Unknown State";
@@ -16,13 +16,34 @@ function StateInfo() {
   const [geoFeature, setGeoFeature] = useState([]);
   const [mapKey, setMapKey] = useState(0);
   const [data, setData] = useState({});
+  const apis = [
+    {
+      name: "StateInfo",
+      address: `/${selectedStateAbbr}`,
+    },
+    {
+      name: "EnsembleSMD",
+      address: `/${selectedStateAbbr}/ensemble/smd`,
+    },
+    {
+      name: "EnsembleMMD",
+      address: `/${selectedStateAbbr}/ensemble/mmd`,
+    },
+    {
+      name: "RandomPlanSMD",
+      address: `/${selectedStateAbbr}/random/smd`,
+    },
+    {
+      name: "RandomPlanMMD",
+      address: `/${selectedStateAbbr}/random/mmd`,
+    },
+  ];
 
   useEffect(() => {
     const initValue = () => {
       setGeoFeature([]);
       setData({});
     };
-
     const getData = async () => {
       const api_data = `/${selectedStateAbbr.toUpperCase()}/info`;
       try {
@@ -33,7 +54,7 @@ function StateInfo() {
       }
     };
     const getEnactedMap = async () => {
-      const api_enactedMap = `/${selectedStateAbbr.toUpperCase()}/enactedMap`;
+      const api_enactedMap = `/${selectedStateAbbr.toUpperCase()}/enacted-map`;
       try {
         const response = await axios.get(
           `http://localhost:8080${api_enactedMap}`
@@ -49,39 +70,56 @@ function StateInfo() {
     getEnactedMap();
   }, [selectedStateAbbr]);
 
+  const infoItems = [
+    {
+      title: "Total Population",
+      values: [
+        {
+          value: data.totalPopulation?.toLocaleString() || 0,
+          suffix: "people",
+        },
+      ],
+    },
+    {
+      title: "Total Seats",
+      values: [{ value: data.totalSeats || 0, suffix: "seats" }],
+    },
+    {
+      title: "2020 Party Splits",
+      values: [
+        { value: data.republican || 0, suffix: "Republicans" },
+        { value: data.democratic || 0, suffix: "Democrats" },
+      ],
+    },
+    {
+      title: "Minority Population",
+      values: [
+        {
+          value: data.racialPopulation?.black?.toLocaleString() || 0,
+          suffix: "African Americans",
+        },
+        {
+          value: data.racialPopulation?.asian?.toLocaleString() || 0,
+          suffix: "Asians",
+        },
+        {
+          value: data.racialPopulation?.hispanic?.toLocaleString() || 0,
+          suffix: "Hispanics",
+        },
+      ],
+    },
+  ];
+
   return (
     <>
       <div className="body">
-        <Sidebar show={showSideBar} handleClose={() => setShowSideBar(false)} />
+        <SideBar show={showSideBar} handleClose={() => setShowSideBar(false)} />
         <Brand
           title={selectedState}
           className={"text_selectedState_Analysis"}
         />
         <div className="body_analysis">
-          <NavBar
-            navigateItem={[
-              {
-                name: "StateInfo",
-                address: `/${selectedStateAbbr}`,
-              },
-              {
-                name: "EnsembleSMD",
-                address: `/${selectedStateAbbr}/ensemble/smd`,
-              },
-              {
-                name: "EnsembleMMD",
-                address: `/${selectedStateAbbr}/ensemble/mmd`,
-              },
-              {
-                name: "RandomPlanSMD",
-                address: `/${selectedStateAbbr}/random/smd`,
-              },
-              {
-                name: "RandomPlanMMD",
-                address: `/${selectedStateAbbr}/random/mmd`,
-              },
-            ]}
-          />
+          <NavBar navigateItem={apis} />
           <Row className="contents_Random">
             <Col xs={12} md={6} className="col_stateInformation">
               <DistrictMapTitle title={"Enacted Plan"} address={`/`} />
@@ -97,61 +135,17 @@ function StateInfo() {
               <Row className="item_contents_Random">
                 <div className="info_title">State Information</div>
                 <Row className="info_grid">
-                  <Row className="info_grid">
-                    <Col className="info_item">
-                      <div className="info_subTitle">Total Population</div>
-                      <div>
-                        <span className="info_data">
-                          {data.total_pop ? data.total_pop.toLocaleString() : 0}
-                        </span>{" "}
-                        people
-                      </div>
+                  {infoItems.map((item, index) => (
+                    <Col key={index} className="info_item">
+                      <div className="info_subTitle">{item.title}</div>
+                      {item.values.map((val, idx) => (
+                        <div key={idx}>
+                          <span className="info_data">{val.value}</span>{" "}
+                          {val.suffix}
+                        </div>
+                      ))}
                     </Col>
-                    <Col className="info_item">
-                      <div className="info_subTitle">Total Seats</div>
-                      <div>
-                        <span className="info_data">
-                          {data.total_seats || 0}
-                        </span>{" "}
-                        seats
-                      </div>
-                    </Col>
-                  </Row>
-                  <Row className="info_grid">
-                    <Col className="info_item">
-                      <div className="info_subTitle">2020 Party Splits</div>
-                      <div>
-                        <span className="info_data">
-                          {data.republican || 0}
-                        </span>{" "}
-                        Republicans
-                        <br />
-                        <span className="info_data">
-                          {data.democratic || 0}
-                        </span>{" "}
-                        Democrats
-                      </div>
-                    </Col>
-                    <Col className="info_item">
-                      <div className="info_subTitle">Minority Population</div>
-                      <div>
-                        <span className="info_data">
-                          {data.racial_pop?.blk.toLocaleString() || 0}
-                        </span>{" "}
-                        African Americans
-                        <br />
-                        <span className="info_data">
-                          {data.racial_pop?.asn.toLocaleString() || 0}
-                        </span>{" "}
-                        Asians
-                        <br />
-                        <span className="info_data">
-                          {data.racial_pop?.hsp.toLocaleString() || 0}
-                        </span>{" "}
-                        Hispanics
-                      </div>
-                    </Col>
-                  </Row>
+                  ))}
                 </Row>
               </Row>
             </Col>
@@ -160,6 +154,6 @@ function StateInfo() {
       </div>
     </>
   );
-}
+};
 
 export default StateInfo;

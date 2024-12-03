@@ -1,18 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Row, Col, Container, Dropdown } from "react-bootstrap";
+import CircleIcon from "./assets/circle-icon.svg";
+import SideBar from "./Components/UI/SideBar";
+import USMap from "./Components/Visualization/USMap";
+import Brand from "./Components/UI/Brand";
 
-import arrowCircleIcon from "./assets/arrowCircleIcon.svg";
-import circleIcon from "./assets/circleIcon.svg";
-import Sidebar from "./Components/Sidebar";
-import USMap from "./Components/USMap";
-import Brand from "./Components/Brand";
-import ToAnalysisButtons from "./Components/ToAnalysisButtons";
-
-function Home() {
+const Home = () => {
   const [selectedState, setSelectedState] = useState("SELECT A STATE");
   const [hoveredLocation, setHoveredLocation] = useState(null);
-  const [showButtons, setShowButtons] = useState(false);
   const [showSideBar, setShowSideBar] = useState(false);
   const customStates = ["MISSISSIPPI", "ALABAMA", "PENNSYLVANIA"];
   const abbreviation = { MISSISSIPPI: "ms", ALABAMA: "al", PENNSYLVANIA: "pa" };
@@ -23,7 +19,7 @@ function Home() {
   return (
     <>
       <div className="body">
-        <Sidebar show={showSideBar} handleClose={() => setShowSideBar(false)} />
+        <SideBar show={showSideBar} handleClose={() => setShowSideBar(false)} />
         <div className="body_home">
           <Brand />
           <Container>
@@ -38,7 +34,7 @@ function Home() {
                     {" "}
                     <img
                       alt=""
-                      src={circleIcon}
+                      src={CircleIcon}
                       width="10px"
                       height="10px"
                       className="svgIcon"
@@ -80,18 +76,10 @@ function Home() {
               </Col>
             </Row>
           </Container>
-          {/* <ToAnalysisButtons
-            show={showButtons}
-            handleClose={() => setShowButtons(false)}
-            toEnsemble={toEnsemble}
-            toRandom={toRandom}
-            selectedState={selectedState}
-            toCompareCurrent={toCompareCurrent}
-          /> */}
         </div>
       </div>
     </>
   );
-}
+};
 
 export default Home;

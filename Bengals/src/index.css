@@ -421,7 +421,9 @@ h1 span {
     font-weight: bold;
     /* white-space: normal; */
 }
-
+.table_th tr td {
+    background-color: rgb(173, 173, 173);
+}
 .map_district {
     height: 510px;
     position: relative;

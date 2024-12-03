@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation, useParams } from "react-router-dom";
-import Sidebar from "./Components/Sidebar";
+import SideBar from "./Components/UI/SideBar";
 import { Row, Col } from "react-bootstrap";
-import DistrictMap from "./Components/DistrictMap";
-import Brand from "./Components/Brand";
-import NavBar from "./Components/NavBar";
-import RandomPlanContents from "./CombinedComponents/RandomPlanContents";
-import DistrictMapTitle from "./CombinedComponents/DistrictMapTitle";
+import DistrictMap from "./Components/Visualization/DistrictMap";
+import Brand from "./Components/UI/Brand";
+import NavBar from "./Components/UI/NavBar";
+import RandomPlanContents from "./Components/Random/RandomPlanContents";
+import DistrictMapTitle from "./Components/Pages/DistrictMapTitle";
 
-function Random() {
+const Random = () => {
   const abbreviation = { ms: "MISSISSIPPI", al: "ALABAMA", pa: "PENNSYLVANIA" };
   const { id: selectedStateAbbr } = useParams();
   const selectedState = abbreviation[selectedStateAbbr];
@@ -22,38 +22,23 @@ function Random() {
   const randomPlans = [
     "Highest Republican Split",
     "Highest Democratic Split",
-    "Highest Non-White Ratio",
-    "Highest White Ratio",
+    "Highest Non-White Probability",
+    "Highest White Probability",
     "Highest Opportunity District",
   ];
   const apis = {
-    "Highest Republican Split": "rep",
-    "Highest Democratic Split": "dem",
-    "Highest Non-White Ratio": "non_wht_max",
-    "Highest White Ratio": "wht_max",
-    "Highest Opportunity District": "op_max",
-  };
-  const [planInfo, setPlanInfo] = useState({
-    numDistricts: 0,
-    op_districts: 0,
-    safe_districts: 0,
-    op_threshold: 0,
-    Republicans: 0,
-    Democrats: 0,
-  });
-  const seatVoteCurveData = {};
-  const bias = 0;
-  const symmetry = 0;
-  const responsiveness = {
-    republican: 0,
-    democratic: 0,
+    "Highest Republican Split": "republican",
+    "Highest Democratic Split": "democratic",
+    "Highest Non-White Probability": "non-white-max",
+    "Highest White Probability": "white-max",
+    "Highest Opportunity District": "opportunity-max",
   };
   const [data, setData] = useState({});
 
   useEffect(() => {
     setData({});
     const getData = async () => {
-      const api = `/${selectedStateAbbr.toUpperCase()}/randomPlan/${
+      const api = `/${selectedStateAbbr.toUpperCase()}/random-plan/${
         apis[showContent]
       }/${SMDMMD}`;
       try {
@@ -61,7 +46,6 @@ function Random() {
         setData(response.data);
         setGeoFeature(response.data.features || []);
         setMapKey((prevKey) => prevKey + 1);
-        console.log("Connected!");
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -72,7 +56,7 @@ function Random() {
   return (
     <>
       <div className="body">
-        <Sidebar show={showSideBar} handleClose={() => setShowSideBar(false)} />
+        <SideBar show={showSideBar} handleClose={() => setShowSideBar(false)} />
         <Brand
           title={selectedState}
           className={"text_selectedState_Analysis"}
@@ -107,6 +91,6 @@ function Random() {
       </div>
     </>
   );
-}
+};
 
 export default Random;

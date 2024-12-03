@@ -1,291 +1,187 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
-import StateInfoTable from "./Components/StateInfoTable";
-import testJson from "./assets/blank_ensemble.json";
-import Sidebar from "./Components/Sidebar";
-import Brand from "./Components/Brand";
-import BoxWhisker from "./Components/BoxWhisker";
-import { Nav, Row, Col } from "react-bootstrap";
-import SeatVoteCurve from "./Components/SeatVoteCurve";
-import PoliticalBarChart from "./Components/PoliticalBarChart";
-import OpportunityBar from "./Components/OpportunityBar";
-import TabDropDown from "./Components/TabDropDown";
+import { useLocation, useParams } from "react-router-dom";
+import SideBar from "./Components/UI/SideBar";
+import { Row, Col } from "react-bootstrap";
+import DistrictMap from "./Components/Visualization/DistrictMap";
+import Brand from "./Components/UI/Brand";
+import EnsembleSummary from "./Components/Ensemble/EnsembleSummary";
+import NavBar from "./Components/UI/NavBar";
+import RacialDistribution from "./Components/Ensemble/RacialDistribution";
+import PartySplitsDistribution from "./Components/Ensemble/PartySplitsDistribution";
+import PartyPopulationDistribution from "./Components/Ensemble/PartyPopulationDistribution";
+import PlanComparison from "./Components/Ensemble/PlanComparison";
+import DistrictMapTitle from "./Components/Pages/DistrictMapTitle";
+import OpportunityDistribution from "./Components/Ensemble/OpportunityDistribution";
 
-function Ensemble() {
+const Ensemble = () => {
+  const abbreviation = { ms: "MISSISSIPPI", al: "ALABAMA", pa: "PENNSYLVANIA" };
+  const { id: selectedStateAbbr } = useParams();
+  const location = useLocation().pathname;
+  const SMDMMD = location.split("/")[3];
+  const selectedState = abbreviation[selectedStateAbbr];
   const [showSideBar, setShowSideBar] = useState(false);
   const [geoFeature, setGeoFeature] = useState([]);
+  const [showRacialGraph1, setShowRacialGraph1] = useState("black");
+  const [showRacialGraph2, setShowRacialGraph2] = useState("black");
+  const [showPartyGraph, setShowPartyGraph] = useState("republican");
+  const [showContent, setShowContent] = useState("Ensemble Summary");
   const [mapKey, setMapKey] = useState(0);
-  const { id: selectedState } = useParams();
-  const [showGraph, setShowGraph] = useState("Box & Whisker");
-  const [showMinority, setShowMinority] = useState("blk");
-  const [boxWhisker, setBoxWhisker] = useState({
-    SMD: [],
-    MMD: [],
-  });
-  const [minority_curve, setMinority_curve] = useState({ SMD: {}, MMD: {} });
-  const [partySplits, setPartySplits] = useState({ SMD: {}, MMD: {} });
-  const [opDistrict, setOpDistrict] = useState({ SMD: {}, MMD: {} });
-  const [opRepresentatives, setOpRepresentatives] = useState({
-    SMD: {},
-    MMD: {},
-  });
-  const [stateInfo, setStateInfo] = useState({
-    population: 0,
-    votePopulation: 0,
-    totalSeats: 0,
-    Democrat: 0.0,
-    Republican: 0.0,
-    Minorities: { blk: 0.0, hisp: 0.0, asn: 0.0, non_white: 0.0 },
-  });
 
   useEffect(() => {
-    const api = {
-      Mississippi: { stateInfo: "/MS/info", ensemble: "/MS/ensemble" },
-      Alabama: { stateInfo: "/AL/info", ensemble: "/AL/ensemble" },
-      Pennsylvania: { stateInfo: "/PA/info", ensemble: "/PA/ensemble" },
-    };
     const initValue = () => {
-      setStateInfo({
-        population: 0,
-        votePopulation: 0,
-        totalSeats: 0,
-        Democrat: 0.0,
-        Republican: 0.0,
-        Minorities: { blk: 0.0, hisp: 0.0, asn: 0.0, non_white: 0.0 },
-      });
-      setBoxWhisker({ SMD: [], MMD: [] });
-      setMinority_curve({ SMD: {}, MMD: {} });
-      setPartySplits({ SMD: {}, MMD: {} });
-      setOpDistrict({ SMD: {}, MMD: {} });
-      setOpRepresentatives({ SMD: {}, MMD: {} });
+      setGeoFeature([]);
     };
-    const setValue = (stateInfo, ensemble) => {
-      let features = ensemble.data;
-      setStateInfo({
-        population: stateInfo.data["total_pop"],
-        votePopulation: stateInfo.data["vote_pop"],
-        totalSeats: stateInfo.data["total_seats"],
-        Democrat: stateInfo.data["Democrats"],
-        Republican: stateInfo.data["Republicans"],
-        Minorities: stateInfo.data["racial_pop"],
-      });
-      setGeoFeature(features);
-      setMapKey(mapKey + 1);
-      setBoxWhisker({
-        SMD: features["box_whisker"]["box_SMD"],
-        MMD: features["box_whisker"]["box_MMD"],
-      });
-      setMinority_curve({
-        SMD: features["vote_seats"]["SMD"],
-        MMD: features["vote_seats"]["MMD"],
-      });
-      setPartySplits({
-        SMD: features["party_splits_bar"]["SMD"],
-        MMD: features["party_splits_bar"]["MMD"],
-      });
-      setOpDistrict({
-        SMD: features["op_district_bar"]["SMD"],
-        MMD: features["op_district_bar"]["MMD"],
-      });
-      setOpRepresentatives({
-        SMD: features["op_representatives_bar"]["SMD"],
-        MMD: features["op_representatives_bar"]["MMD"],
-      });
-    };
-    const fetchData = async () => {
-      let api_stateInfo = api[selectedState].stateInfo;
-      let api_ensemble = api[selectedState].ensemble;
+    const getMap = async () => {
+      const api_sampleMMDMap = `/${selectedStateAbbr.toUpperCase()}/sample-mmd-map`;
+      const api_enactedMap = `/${selectedStateAbbr.toUpperCase()}/enacted-map`;
+      let map;
       try {
-        initValue();
-        const stateInfo = await axios.get(
-          `http://localhost:8080${api_stateInfo}`
-        );
-        const ensemble = await axios.get(
-          `http://localhost:8080${api_ensemble}`
-        );
-        setValue(stateInfo, ensemble);
-        console.log("Connected!");
+        if (SMDMMD == "smd") {
+          map = await axios.get(`http://localhost:8080${api_enactedMap}`);
+        } else {
+          map = await axios.get(`http://localhost:8080${api_sampleMMDMap}`);
+        }
+        setGeoFeature(map.data.features || []);
+        setMapKey(mapKey + 1);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-    fetchData();
-  }, [selectedState]);
+    initValue();
+    getMap();
+  }, [selectedStateAbbr, SMDMMD]);
+
   return (
     <>
       <div className="body">
-        <Sidebar show={showSideBar} handleClose={() => setShowSideBar(false)} />
+        <SideBar show={showSideBar} handleClose={() => setShowSideBar(false)} />
         <Brand
-          title={selectedState.toUpperCase()}
+          title={selectedState}
           className={"text_selectedState_Analysis"}
         />
         <div className="body_analysis">
-          <Row className="contents_Ensemble">
-            <Row className="item_contents_Ensemble">
-              <div className="text_contentsTitle_Analysis">
-                Ensemble SMD & MMD
-              </div>
-            </Row>
+          {SMDMMD == "smd" && (
+            <NavBar
+              setShowContent={setShowContent}
+              simpleItem={["Ensemble Summary"]}
+              dropDown={[
+                {
+                  title: "Racial Data",
+                  items: [
+                    "Distribution of Racial Population",
+                    "Opportunity Districts & Representatives",
+                  ],
+                },
+                {
+                  title: "Party Data",
+                  items: ["Distribution of Party Population", "Party Splits"],
+                },
+              ]}
+            />
+          )}
+          {SMDMMD == "mmd" && (
+            <NavBar
+              setShowContent={setShowContent}
+              simpleItem={[
+                "Ensemble Summary",
+                "Enacted Plan vs Average MMD Plans",
+              ]}
+              dropDown={[
+                {
+                  title: "Racial Data",
+                  items: [
+                    "Distribution of Racial Population",
+                    "Opportunity Districts & Representatives",
+                  ],
+                },
+                {
+                  title: "Party Data",
+                  items: ["Distribution of Party Population", "Party Splits"],
+                },
+              ]}
+            />
+          )}
+          <Row className="contents_Random">
             <Col xs={12} md={6} className="col_stateInformation">
-              <Row className="item_contents_Ensemble">
-                <StateInfoTable
-                  stateInfo={stateInfo}
-                  className={"table_contents_Ensemble"}
-                  key={stateInfo}
+              {SMDMMD == "smd" && (
+                <DistrictMapTitle
+                  title={"Enacted Plan"}
+                  address={`/${selectedStateAbbr}`}
+                />
+              )}
+              {SMDMMD == "mmd" && (
+                <DistrictMapTitle
+                  title={"Sample MMD Plan"}
+                  address={`/${selectedStateAbbr}`}
+                />
+              )}
+              <Row className="item_plot_Random">
+                <DistrictMap
+                  mapKey={mapKey}
+                  data={geoFeature}
+                  selectedState={selectedState}
                 />
               </Row>
             </Col>
-            <Row className="item_contents_Ensemble">
-              <Nav
-                variant="tabs"
-                defaultActiveKey="link-1"
-                className="navbar_Ensemble"
-              >
-                <Nav.Item>
-                  <Nav.Link
-                    eventKey="link-1"
-                    className="text_navElement_analysis"
-                    onClick={() => setShowGraph("Box & Whisker")}
-                  >
-                    Box & Whisker
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link
-                    eventKey="link-2"
-                    className="text_navElement_analysis"
-                    onClick={() => setShowGraph("SeatVoteCurve")}
-                  >
-                    Seats-Votes Curve
-                  </Nav.Link>
-                </Nav.Item>
-                <Nav.Item>
-                  <Nav.Link
-                    eventKey="link-3"
-                    className="text_navElement_analysis"
-                    onClick={() => setShowGraph("Party Splits")}
-                  >
-                    Party Splits
-                  </Nav.Link>
-                </Nav.Item>
-                <TabDropDown
-                  title="Opportunity District"
-                  startingEventKey="4"
-                  onSelect={(value) => {
-                    setShowGraph("Opportunity District");
-                    setShowMinority(value);
-                  }}
+            <Col className="col_districtInformation_Random">
+              {showContent === "Ensemble Summary" && (
+                <EnsembleSummary
+                  title={`${SMDMMD.toLocaleUpperCase()} Ensemble Summary`}
+                  SMDMMD={SMDMMD}
+                  selectedStateAbbr={selectedStateAbbr}
                 />
-
-                <TabDropDown
-                  title="Opportunity Representatives"
-                  startingEventKey="8"
-                  onSelect={(value) => {
-                    setShowGraph("Opportunity Representatives");
-                    setShowMinority(value);
-                  }}
+              )}
+              {showContent === "Distribution of Racial Population" && (
+                <RacialDistribution
+                  title={"Distribution of Racial Population"}
+                  showGraph={showRacialGraph1}
+                  setShowGraph={setShowRacialGraph1}
+                  navbarItem={["African American", "Asian", "Hispanic"]}
+                  SMDMMD={SMDMMD}
+                  selectedStateAbbr={selectedStateAbbr}
                 />
-              </Nav>
-            </Row>
-            <div className="text_SMDvsMMD">SMD VS MMD</div>
-            {showGraph == "Box & Whisker" && (
-              <Row className="item_contents_Ensemble">
-                <Col
-                  className="item_plot_Ensemble"
-                  style={{ width: "100%", height: 330 }}
-                >
-                  <BoxWhisker data={boxWhisker.SMD} option={"smd"} />
-                </Col>
-                <Col
-                  className="item_plot_Ensemble"
-                  style={{ width: "100%", height: 330 }}
-                >
-                  <BoxWhisker data={boxWhisker.MMD} option={"mmd"} />
-                </Col>
-              </Row>
-            )}
-            {showGraph == "SeatVoteCurve" && (
-              <Row className="item_contents_Ensemble">
-                <Col
-                  className="item_plot_Ensemble"
-                  style={{ width: "100%", height: 330 }}
-                >
-                  <SeatVoteCurve data={minority_curve.SMD} />
-                </Col>
-                <Col
-                  className="item_plot_Ensemble"
-                  style={{ width: "100%", height: 330 }}
-                >
-                  <SeatVoteCurve data={minority_curve.MMD} />
-                </Col>
-              </Row>
-            )}
-            {showGraph === "Party Splits" && (
-              <Row className="item_contents_Ensemble">
-                <Col
-                  className="item_plot_Ensemble"
-                  style={{ width: "100%", height: 330 }}
-                >
-                  <PoliticalBarChart data={partySplits.SMD} />
-                </Col>
-                <Col
-                  className="item_plot_Ensemble"
-                  style={{ width: "100%", height: 330 }}
-                >
-                  <PoliticalBarChart data={partySplits.MMD} />
-                </Col>
-              </Row>
-            )}
-            {showGraph === "Opportunity District" && (
-              <Row className="item_contents_Ensemble">
-                <Col
-                  className="item_plot_Ensemble"
-                  style={{ width: "100%", height: 330 }}
-                >
-                  <OpportunityBar
-                    keyName="op_districts"
-                    data={opDistrict.SMD[showMinority]}
-                  />
-                </Col>
-                <Col
-                  className="item_plot_Ensemble"
-                  style={{ width: "100%", height: 330 }}
-                >
-                  <OpportunityBar
-                    keyName="op_districts"
-                    data={opDistrict.MMD[showMinority]}
-                  />
-                </Col>
-              </Row>
-            )}
-            {showGraph === "Opportunity Representatives" && (
-              <Row className="item_contents_Ensemble">
-                <Col
-                  className="item_plot_Ensemble"
-                  style={{ width: "100%", height: 330 }}
-                >
-                  <OpportunityBar
-                    keyName="op_representatives"
-                    data={opRepresentatives.SMD[showMinority]}
-                  />
-                </Col>
-                <Col
-                  className="item_plot_Ensemble"
-                  style={{ width: "100%", height: 330 }}
-                >
-                  <OpportunityBar
-                    keyName="op_representatives"
-                    data={opRepresentatives.MMD[showMinority]}
-                  />
-                </Col>
-              </Row>
-            )}
+              )}
+              {showContent === "Opportunity Districts & Representatives" && (
+                <OpportunityDistribution
+                  title={"Opportunity Districts & Representatives"}
+                  showGraph={showRacialGraph2}
+                  setShowGraph={setShowRacialGraph2}
+                  navbarItem={["African American", "Asian", "Hispanic"]}
+                  SMDMMD={SMDMMD}
+                  selectedStateAbbr={selectedStateAbbr}
+                />
+              )}
+              {showContent === "Distribution of Party Population" && (
+                <PartyPopulationDistribution
+                  title={"Distribution of Party Population"}
+                  showGraph={showPartyGraph}
+                  setShowGraph={setShowPartyGraph}
+                  navbarItem={["Republican", "Democratic"]}
+                  SMDMMD={SMDMMD}
+                  selectedStateAbbr={selectedStateAbbr}
+                />
+              )}
+              {showContent === "Party Splits" && (
+                <PartySplitsDistribution
+                  title={"Distribution of Party Splits"}
+                  SMDMMD={SMDMMD}
+                  selectedStateAbbr={selectedStateAbbr}
+                />
+              )}
+              {showContent === "Enacted Plan vs Average MMD Plans" && (
+                <PlanComparison
+                  title={"Enacted Plan vs Average MMD Plans"}
+                  SMDMMD={SMDMMD}
+                  selectedStateAbbr={selectedStateAbbr}
+                />
+              )}
+            </Col>
           </Row>
         </div>
       </div>
     </>
   );
-}
+};
 
 export default Ensemble;
