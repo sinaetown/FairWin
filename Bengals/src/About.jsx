@@ -1,134 +1,133 @@
-import React from "react";
-import bengalLogo from "./assets/Bengal.svg";
-import {
-  Offcanvas,
-  Nav,
-  Navbar,
-  NavDropdown,
-  Container,
-  Button,
-  Alert,
-  Table,
-} from "react-bootstrap";
+import React, { useState } from "react";
+import SideBar from "./Components/UI/SideBar";
+import Brand from "./Components/UI/Brand";
+import NavBar from "./Components/UI/NavBar";
 
-function About() {
+const About = () => {
+  const [showSideBar, setShowSideBar] = useState(false);
+  const [showContent, setShowContent] = useState("Precinct Data");
+
   return (
     <>
       <div className="body">
-        <Navbar
-          expand={false}
-          sticky="top"
-          data-bs-theme="dark"
-          className="sidebar"
-        >
-          <Navbar.Toggle
-            className="sidebar_button"
-            aria-controls="offcanvasNavbar"
-          >
-            {" "}
-            <svg
-              version="1.0"
-              xmlns="http://www.w3.org/2000/svg"
-              width="40px"
-              height="40px"
-              viewBox="0 0 1280.000000 1280.000000"
-              transform="rotate(180)"
-              preserveAspectRatio="xMidYMid meet"
-            >
-              <metadata>
-                Created by potrace 1.15, written by Peter Selinger 2001-2017
-              </metadata>
-              <g
-                transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)"
-                fill="rgb(40, 38, 38)"
-                stroke="rgba(255, 255, 255, 1)"
-                strokeWidth="400"
-              >
-                <path
-                  d="M1000 10050 l0 -1510 4643 0 4642 0 755 755 755 755 -755 755 -755
-755 -4642 0 -4643 0 0 -1510z"
-                />
-                <path
-                  d="M1000 6390 l0 -1510 4648 0 4647 0 753 753 752 752 -758 758 -757
-757 -4643 0 -4642 0 0 -1510z"
-                />
-                <path
-                  d="M1000 2750 l0 -1510 4643 0 4642 0 753 753 c413 413 752 757 752 762
-0 5 -336 346 -747 757 l-748 748 -4647 0 -4648 0 0 -1510z"
-                />
-              </g>
-            </svg>
-          </Navbar.Toggle>
-          <Navbar.Offcanvas
-            aria-labelledby="offcanvasNavbarLabel"
-            className="sidebar_offcanvas"
-            placement="end"
-          >
-            <Offcanvas.Header closeButton></Offcanvas.Header>
-            <Offcanvas.Body className="sidebar_body">
-              <h1 id="textring">
-                <span className="char1">F</span>
-                <span className="char2">A</span>
-                <span className="char3">I</span>
-                <span className="char4">R</span>
-                <span className="char5">V</span>
-                <span className="char6">O</span>
-                <span className="char7">T</span>
-                <span className="char8">E</span>
-                <span className="char9">*</span>
-                <span className="char10">B</span>
-                <span className="char11">E</span>
-                <span className="char12">N</span>
-                <span className="char13">G</span>
-                <span className="char14">A</span>
-                <span className="char15">L</span>
-                <span className="char16">*</span>
-              </h1>
-              <Nav className="sidebar_nav">
-                <Nav.Link href="/">STATE SELECTION</Nav.Link>
-              </Nav>
-            </Offcanvas.Body>
-          </Navbar.Offcanvas>
-        </Navbar>
-        <Navbar data-bs-theme="dark" className="brand">
-          <Navbar.Brand href="/" className="text_FAIRWIN">
-            <img
-              alt=""
-              src={bengalLogo}
-              width="40"
-              height="40"
-              className="bengal"
-            />
-            &nbsp; FAIRWIN
-          </Navbar.Brand>
-        </Navbar>
-        <div className="text_aboutContent">
-          <h1>ABOUT FAIRWIN project</h1>
-          <p>
-            1. Will the Fair Representation Act for multi-member election
-            districts (MMD) increase fairness?{" "}
-          </p>
-          <p>
-            2. Will the Fair Representation Act for multi-member election
-            districts (MMD) lessen the effects of Gerrymandering?{" "}
-          </p>
-          <br />
-          <h1>ABOUT Fair Representation Act</h1>
-          <p>1. Multi-member districts</p>
-          <p>2. Ranked choice voting</p>
-          <br />
-          <h1>ABOUT Data</h1>
-          <p>2020 House of Representative Election</p>
-          <p>Reference : </p>
-          <br />
-          <h1>ABOUT Bengal</h1>
-          <p>Data: Hyunjun Cho, HyoJong Chung</p>
-          <p>BackEnd: Sinae Hong, Hyunjun Cho</p>
-          <p>FrontEnd: Yeonkyung Ha</p>
+        <SideBar show={showSideBar} handleClose={() => setShowSideBar(false)} />
+        <Brand />
+        <div className="body-contents">
+          <NavBar
+            setShowContent={setShowContent}
+            simpleItem={["Precinct Data", "Project Information", "Algorithms"]}
+          />
+          <div className="body-about">
+            {showContent === "Precinct Data" && (
+              <div>
+                <h1 className="text-about-title">Precinct Data</h1>
+                <h4>Geographical Information</h4>
+                <p>
+                  <b>Alabama</b>: U.S. Department of Commerce, U.S. Census
+                  Bureau, Geography Division, Spatial Data Collection, and
+                  Products Branch “TIGER/Line Shapefile, Current, State,
+                  Alabama, 2020 Census Voting District (VTD).” October 28, 2022.
+                  https://catalog.data.gov/dataset/tiger-line-shapefile-current-state-alabama-2020-census-voting-district-vtd
+                </p>
+                <p>
+                  <b>Mississippi</b>: U.S. Department of Commerce, U.S. Census
+                  Bureau, Geography Division, Spatial Data Collection and
+                  Products Branch “TIGER/Line Shapefile, Current, State,
+                  Mississippi 2020 Census Voting District (VTD).” October 28,
+                  2022.
+                  https://catalog.data.gov/dataset/tiger-line-shapefile-current-state-mississippi-2020-census-voting-district-vtd
+                </p>
+                <p>
+                  <b>Pennsylvania</b>: U.S. Department of Commerce, U.S. Census
+                  Bureau, Geography Division, Spatial Data Collection, and
+                  Products Branch “TIGER/Line Shapefile, Current, State,
+                  Pennsylvania, 2020 Census Voting District (VTD).” October 28,
+                  2022.
+                  https://catalog.data.gov/dataset/tiger-line-shapefile-current-state-pennsylvania-2020-census-voting-district-vtd
+                </p>
+                <h4>Demographic Information</h4>
+                <p>
+                  T. Kenny, Christopher, and Cory McCartan. 2021. “2020
+                  Redistricting Data Files.” August 10, 2021.
+                  https://alarm-redist.github.io/posts/2021-08-10-census-2020/.{" "}
+                </p>
+              </div>
+            )}
+            {showContent === "Project Information" && (
+              <div>
+                <h1 className="text-about-title">Project Information</h1>
+                <p>
+                  One of the most important aspects to consider when creating
+                  district plans of a state is the gerrymandering effect: With
+                  some slight tricks applied, this would enable a weak party
+                  (party with fewer votes) to win over the strong party (party
+                  with the most votes), which leads to unfairness in political
+                  elections.
+                </p>
+                <p>
+                  The main objective of this project lies in providing
+                  statistical information on two different district plans: SMD
+                  (Single Member District) and MMD (Multi Member District)
+                  plans. We especially focus on showing such information with
+                  respect to the minority population and political parties. We
+                  expect the users to see how these two district plans differ
+                  and observe the level of impact that gerrymandering would have
+                  on both district plans.
+                </p>
+              </div>
+            )}
+            {showContent === "Algorithms" && (
+              <div>
+                <h1 className="text-about-title">Algorithms</h1>
+                <p>
+                  To provide sufficient data for both district plans, we have
+                  generated SMD & MMD ensembles (5000 district plans generated
+                  with simulation [Recom algorithm]). Also as MMD requires
+                  election based on FRA (Fair Representation Act), we have
+                  implemented a voting algorithm that would generate a simulated
+                  result when applied to such a rule.
+                </p>
+                <p>
+                  <b>Recom Algorithm</b>: Recom is a graph algorithm intended to
+                  create a new representation of the graphs by moving a node
+                  inside a subgraph to another subgraph. However, constraints
+                  prevent the algorithm from generating graphs that are not
+                  consistent with the original graph. Under such constraints,
+                  the algorithm runs for a designated number of iterations and
+                  returns a new graph with changed node compositions.
+                </p>
+                <p>
+                  <b>Gluing Algorithm</b>: To create an MMD plan, we need to
+                  “group” the districts created from the SMD plan according to
+                  the set number of districts calculated by the rules provided
+                  under FRA. The gluing algorithm ensures that the created group
+                  is compact and checks whether the glued districts are
+                  geographically apart.
+                </p>
+                <p>
+                  <b>MMD Election Algorithm</b>: Unlike the SMD plan, MMD
+                  requires to have multiple candidates inside each district,
+                  requiring a distinct election method. The algorithm provides a
+                  “Ballot” to each voter where the voters need to submit the
+                  ranks of the candidate according to their preferences. In the
+                  first round of the election, the amount of votes that each
+                  candidate gets is counted by the ballots to whom the 1st
+                  ranked is marked. When the candidate with the most votes has
+                  votes exceeding the threshold, the candidate is elected and
+                  the amount of votes that have exceeded is distributed to the
+                  next ranked candidates. If it has not exceeded the threshold,
+                  the candidate with the lowest number of votes is eliminated,
+                  and the votes earned are distributed to the next ranked
+                  candidates. Such a process loops until the required number of
+                  candidates are elected.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </>
   );
-}
+};
 
 export default About;
