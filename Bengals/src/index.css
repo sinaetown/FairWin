@@ -1,0 +1,473 @@
+.sidebar {
+    width: 12px;
+    float: right;
+    right: 4%;
+    top: 2%;
+    position: fixed;
+}
+
+.sidebar_button {
+    border: 0px;
+    color: rgba(255, 255, 255, 0);
+}
+
+.sidebar_offcanvas {
+    width: 0px;
+    text-align: center;
+}
+
+.sidebar_nav {
+    padding-top: 120px;
+}
+
+#textring {
+    position: relative;
+    width: 150px;
+    border-radius: 50%;
+    transform: rotate(-50deg);
+    animation-name: rotate;
+    animation-duration: 5s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+h1 span {
+    font: 23px Monaco, MonoSpace;
+    height: 70px;
+    position: absolute;
+    width: 20px;
+    left: 100px;
+    top: 50px;
+    transform-origin: bottom center;
+}
+
+.char1 {
+    transform: rotate(0deg);
+}
+
+.char2 {
+    transform: rotate(22.5deg);
+}
+
+.char3 {
+    transform: rotate(45deg);
+}
+
+.char4 {
+    transform: rotate(67.5deg);
+}
+
+.char5 {
+    transform: rotate(90deg);
+}
+
+.char6 {
+    transform: rotate(112.5deg);
+}
+
+.char7 {
+    transform: rotate(135deg);
+}
+
+.char8 {
+    transform: rotate(157.5deg);
+}
+
+.char9 {
+    transform: rotate(180deg);
+}
+
+.char10 {
+    transform: rotate(202.5deg);
+}
+
+.char11 {
+    transform: rotate(225deg);
+}
+
+.char12 {
+    transform: rotate(247.5deg);
+}
+
+.char13 {
+    transform: rotate(270deg);
+}
+
+.char14 {
+    transform: rotate(292.5deg);
+}
+
+.char15 {
+    transform: rotate(315deg);
+}
+
+.char16 {
+    transform: rotate(337.5deg);
+}
+
+.sidebar_dropdownItem {
+    text-align: center;
+
+    &:active {
+        background-color: rgb(40, 38, 38);
+    }
+}
+
+.body {
+    background-color: rgb(40, 38, 38);
+    padding-bottom: 5%;
+    scroll-behavior: smooth;
+    justify-content: center;
+}
+
+.body1 {
+    background-color: rgb(40, 38, 38);
+    /* padding-bottom: 10%; */
+    scroll-behavior: smooth;
+}
+
+.brand {
+    padding-top: 2.5%;
+    padding-left: 3.5%;
+}
+
+.text_FAIRWIN {
+    color: rgb(255, 255, 255);
+    font-size: 220%;
+    font-family: Gill Sans, sans-serif;
+}
+
+.text_FAIRWIN:hover {
+    color: rgb(236, 31, 12);
+    font-size: 220%;
+    font-family: Gill Sans, sans-serif;
+}
+
+.bengal {
+    vertical-align: text-top;
+    filter: invert(100%);
+}
+
+.text_selectedState_Analysis {
+    color: rgb(236, 31, 12);
+    font-size: 50px;
+    font-family: Gill Sans, sans-serif;
+    font-weight: bold;
+    white-space: nowrap;
+    text-align: center;
+}
+
+
+/* big screen */
+@media screen and (min-width:1250px) {
+    .text_question {
+        color: rgb(255, 255, 255);
+        font-family: Gill Sans, sans-serif;
+        text-align: center;
+        font-size: 200%;
+    }
+
+    .text_selectedState {
+        color: rgb(236, 31, 12);
+        font-size: 900%;
+        font-family: Gill Sans, sans-serif;
+        font-weight: bold;
+        position: absolute;
+        top: 30%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        white-space: nowrap;
+        margin-top: 3%;
+    }
+
+    .map_us {
+        width: 65%;
+        height: 65%;
+        justify-content: center;
+        display: flex;
+        position: relative;
+        margin-top: 9%;
+    }
+}
+
+/* small screen */
+@media screen and (max-width:1250px) {
+    .text_question {
+        color: rgb(255, 255, 255);
+        font-family: Gill Sans, sans-serif;
+        text-align: center;
+        font-size: 70px;
+    }
+
+    .text_selectedState {
+        color: rgb(236, 31, 12);
+        font-size: 30px;
+        font-family: Gill Sans, sans-serif;
+        font-weight: bold;
+        white-space: nowrap;
+        text-align: center;
+    }
+
+    .map_us {
+        width: 85%;
+        height: 85%;
+        justify-content: center;
+        display: flex;
+        margin-top: 3%;
+    }
+}
+
+.dataExplaination {
+    margin-left: 3%;
+}
+
+.body2 {
+    background-color: rgb(241, 243, 243);
+    /* padding-bottom: 10%; */
+    /* display: flex; */
+    /* justify-content: space-between; */
+    padding: 1%;
+}
+
+/* .contents{
+        padding-bottom: 10%;
+    display: flex;
+   justify-content: space-between;
+} */
+
+.text_Available_State {
+    color: rgb(255, 255, 255);
+    font-size: 100%;
+    font-family: Gill Sans, sans-serif;
+}
+
+.text_subQuestion2 {
+    color: rgb(236, 31, 12);
+}
+
+/* big screen */
+@media screen and (min-width:970px) {
+    .text_subQuestion1_1 {
+        color: rgb(40, 38, 38);
+        font-family: Tahoma;
+        font-size: 250%;
+        width: 60%;
+        font-weight: bold;
+        padding-left: 8%;
+        padding-top: 5%;
+    }
+
+    /* 
+    .text_subQuestion1_2 {
+        color: rgb(40, 38, 38);
+        font-family: Tahoma;
+        font-size: 250%;
+        width: 65%;
+        font-weight: bold;
+        padding-left: 8%;
+        padding-top: 8%;
+    } */
+}
+
+/* small screen */
+@media screen and (max-width:970px) {
+    .text_subQuestion1_1 {
+        color: rgb(40, 38, 38);
+        font-family: Tahoma;
+        font-size: 250%;
+        width: 600px;
+        font-weight: bold;
+        padding-left: 8%;
+        padding-top: 8%;
+    }
+
+    .text_subQuestion1_2 {
+        color: rgb(40, 38, 38);
+        font-family: Tahoma;
+        font-size: 250%;
+        width: 550px;
+        font-weight: bold;
+        padding-left: 8%;
+        padding-top: 8%;
+    }
+}
+
+.alert_dataInformation {
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.navbar_fairness {
+    /* margin-top: 10%; */
+    /* padding-left: 5%; */
+    /* justify-content: rights; */
+    background-color: rgb(40, 38, 38);
+    /* float: right; */
+    height: 69px;
+}
+
+.navbar_race {
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+.text_navElement_fairness {
+    color: rgb(241, 243, 243);
+    font-weight: bold;
+    border-bottom: 0px;
+
+    &:hover {
+        cursor: pointer;
+        color: rgb(236, 31, 12);
+    }
+
+    &:active {
+        font-weight: bold;
+    }
+}
+
+.text_navElement {
+    color: rgb(40, 38, 38);
+    font-weight: bold;
+
+    &:hover {
+        cursor: pointer;
+        color: rgb(236, 31, 12);
+    }
+
+    &:active {
+        font-weight: bold;
+    }
+}
+
+/* .graph{
+    background-color: rgb(245, 245, 245);
+  padding: 2%;
+  text-align: center;
+  width: "100%"; height: 300;
+} */
+.tableContainer_analysis {
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* justify-content: space-between; */
+    background-color: rgb(255, 255, 255);
+    /* justify-content: center; */
+    /* padding: 2%; */
+    /* text-align: center; */
+    /* margin-left: 4%;
+    margin-right: 4%; */
+    /* width: 45%; */
+    /* float: right; */
+}
+
+.mapContainer {
+    background-color: rgb(255, 255, 255);
+    justify-content: center;
+    /* width: 45%; */
+    /* margin-left: 4%;
+    margin-right: 4%; */
+}
+
+.body3 {
+    background-color: rgb(236, 31, 12);
+    padding-bottom: 10%;
+}
+
+.text_summary {
+    color: rgb(0, 0, 0);
+    font-family: Tahoma;
+    font-size: 250%;
+    font-weight: bold;
+    padding-left: 8%;
+    padding-top: 8%;
+    line-height: 25px;
+}
+
+.table_analysis {
+    margin-top: 3%;
+    margin-left: 5%;
+    margin-right: 5%;
+    width: 90%;
+}
+
+.table_0 {
+    text-align: center;
+    width: 100px;
+    font-weight: bold;
+}
+
+tbody {
+    justify-content: center;
+}
+
+.table_th {
+    text-align: center;
+}
+
+.map_district {
+    height: 600px;
+    position: relative;
+    z-index: -0;
+    background-color: rgba(255, 255, 255, 0);
+    justify-content: center;
+}
+
+.summary_stateInformation {
+    padding: 5%;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.text_summaryContent {
+    float: right;
+    position: absolute;
+    color: rgb(0, 0, 0);
+    font-family: Tahoma;
+    font-size: 150%;
+    font-weight: bold;
+    margin-left: 40%;
+    margin-top: 5%;
+    margin-right: 70%;
+    margin-bottom: 10%;
+}
+
+.text_summaryState {
+    color: white;
+    font-size: 45px;
+    white-space: nowrap;
+}
+
+.text_aboutContent {
+    color: white;
+    margin: 10%;
+}
+
+.button_toAnalysis {
+    float: right;
+}
+
+/* .container{
+    display: flex;
+} */
+.districtMap {
+    padding: 0;
+}
+
+.col_stateInformation {
+    background-color: rgb(40, 38, 38);
+}
+
+.col_districtInformation {
+    background-color: rgb(40, 38, 38);
+}
+
+/* .graphContainer{
+    width: "100%"; height: 300;
+    margin: 0px;
+}
+.responsiveContainer{
+    width: "100%"; height: 300;
+    margin: 0px;
+    padding: 0px;
+} */
