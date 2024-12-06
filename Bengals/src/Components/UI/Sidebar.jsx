@@ -11,12 +11,12 @@ const SideBar = ({ show, handleClose }) => {
       data-bs-theme="dark"
       className="sidebar"
     >
-      <Navbar.Toggle className="sidebar_button" aria-controls="offcanvasNavbar">
-        <img alt="" src={SideBarIcon} className="svgIcon" />
+      <Navbar.Toggle className="sidebar-button" aria-controls="offcanvasNavbar">
+        <img alt="" src={SideBarIcon} className="svg-icon" />
       </Navbar.Toggle>
       <Navbar.Offcanvas
         aria-labelledby="offcanvasNavbarLabel"
-        className="sidebar_offcanvas"
+        className="sidebar-offcanvas"
         placement="end"
       >
         <Offcanvas.Header closeButton></Offcanvas.Header>
@@ -39,7 +39,7 @@ const SideBar = ({ show, handleClose }) => {
             <span className="char15">L</span>
             <span className="char16">*</span>
           </h1>
-          <Nav className="sidebar_nav">
+          <Nav className="sidebar-nav">
             <Nav.Link as={Link} to="/">
               STATE SELECTION
             </Nav.Link>

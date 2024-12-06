@@ -44,6 +44,7 @@ const StateInfo = () => {
       setGeoFeature([]);
       setData({});
     };
+
     const getData = async () => {
       const api_data = `/${selectedStateAbbr.toUpperCase()}/info`;
       try {
@@ -53,6 +54,7 @@ const StateInfo = () => {
         console.error("Error fetching state info data:", error);
       }
     };
+
     const getEnactedMap = async () => {
       const api_enactedMap = `/${selectedStateAbbr.toUpperCase()}/enacted-map`;
       try {
@@ -114,16 +116,13 @@ const StateInfo = () => {
     <>
       <div className="body">
         <SideBar show={showSideBar} handleClose={() => setShowSideBar(false)} />
-        <Brand
-          title={selectedState}
-          className={"text_selectedState_Analysis"}
-        />
-        <div className="body_analysis">
+        <Brand title={selectedState} className={"text-brand"} />
+        <div className="body-contents">
           <NavBar navigateItem={apis} />
-          <Row className="contents_Random">
-            <Col xs={12} md={6} className="col_stateInformation">
+          <Row className="map-contents-row">
+            <Col xs={12} md={6} className="map-contents-col">
               <DistrictMapTitle title={"Enacted Plan"} address={`/`} />
-              <Row className="item_plot_Random">
+              <Row className="district-map-container">
                 <DistrictMap
                   mapKey={mapKey}
                   data={geoFeature}
@@ -131,16 +130,16 @@ const StateInfo = () => {
                 />
               </Row>
             </Col>
-            <Col className="col_districtInformation_Random">
-              <Row className="item_contents_Random">
-                <div className="info_title">State Information</div>
-                <Row className="info_grid">
+            <Col className="info-contents-col">
+              <Row className="info-contents-row">
+                <div className="info-title">State Information</div>
+                <Row className="info-grid">
                   {infoItems.map((item, index) => (
-                    <Col key={index} className="info_item">
-                      <div className="info_subTitle">{item.title}</div>
+                    <Col key={index} className="info-item">
+                      <div className="info-subtitle">{item.title}</div>
                       {item.values.map((val, idx) => (
                         <div key={idx}>
-                          <span className="info_data">{val.value}</span>{" "}
+                          <span className="info-data">{val.value}</span>{" "}
                           {val.suffix}
                         </div>
                       ))}

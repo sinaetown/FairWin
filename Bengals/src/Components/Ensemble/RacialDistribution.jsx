@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Row, Col } from "react-bootstrap";
 import NavBar from "../UI/NavBar";
-import BoxWhisker from "../Visualization/BoxWhisker";
+import BoxWhisker from "../Visualization/BoxNdWhisker/BoxWhisker";
 
 const RacialDistribution = ({
   title,
@@ -10,14 +10,14 @@ const RacialDistribution = ({
   setShowGraph,
   navbarItem,
   selectedStateAbbr,
-  SMDMMD,
+  smdmmd,
 }) => {
   const [data, setData] = useState({});
 
   useEffect(() => {
     setData({});
     const getData = async () => {
-      const api = `/${selectedStateAbbr.toUpperCase()}/racial-distribution/${SMDMMD}`;
+      const api = `/${selectedStateAbbr.toUpperCase()}/racial-distribution/${smdmmd}`;
       try {
         const response = await axios.get(`http://localhost:8080${api}`);
         setData(response.data);
@@ -26,22 +26,22 @@ const RacialDistribution = ({
       }
     };
     getData();
-  }, [selectedStateAbbr, SMDMMD, showGraph]);
+  }, [selectedStateAbbr, smdmmd, showGraph]);
 
   return (
-    <Row className="item_contents_Random">
-      <div className="info_title">{title}</div>
+    <Row className="info-contents-row">
+      <div className="info-title">{title}</div>
       <Row>
         <NavBar setShowContent={setShowGraph} simpleItem={navbarItem} />
       </Row>
-      <Row className="item_contents_Ensemble">
+      <Row className="info-contents-inner-row">
         <Col
-          className="item_plot_Ensemble"
+          className="info-visualization-container"
           style={{ width: "100%", height: 330 }}
         >
           <BoxWhisker
             data={data ? data[showGraph] || [] : []}
-            option={SMDMMD}
+            option={smdmmd}
           />
         </Col>
       </Row>

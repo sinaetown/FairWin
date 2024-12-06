@@ -16,9 +16,9 @@ const SeatVoteCurve = ({ data }) => {
       <LineChart
         data={data}
         margin={{
-          top: 5,
-          right: 30,
-          left: 20,
+          top: 20,
+          right: 35,
+          left: 15,
           bottom: 5,
         }}
       >

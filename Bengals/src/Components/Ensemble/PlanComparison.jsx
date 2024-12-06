@@ -3,7 +3,7 @@ import axios from "axios";
 import { Row, Table } from "react-bootstrap";
 import SeatVoteCurve from "../Visualization/SeatVoteCurve";
 
-const PlanComparison = ({ title, selectedStateAbbr, SMDMMD }) => {
+const PlanComparison = ({ title, selectedStateAbbr, smdmmd }) => {
   const [data, setData] = useState({});
 
   useEffect(() => {
@@ -18,14 +18,14 @@ const PlanComparison = ({ title, selectedStateAbbr, SMDMMD }) => {
       }
     };
     getData();
-  }, [selectedStateAbbr, SMDMMD]);
+  }, [selectedStateAbbr, smdmmd]);
 
   return (
-    <Row className="item_contents_Random">
-      <div className="info_title">{title}</div>
+    <Row className="info-contents-row">
+      <div className="info-title">{title}</div>
       <Row>
         <Table striped bordered hover>
-          <thead className="table_th">
+          <thead className="table-header">
             <tr>
               <td></td>
               <td>Enacted Plan</td>
@@ -34,7 +34,7 @@ const PlanComparison = ({ title, selectedStateAbbr, SMDMMD }) => {
           </thead>
           <tbody>
             <tr>
-              <td className="table_stateInfo_col1">Party Splits</td>
+              <td className="table-first-col">Party Splits</td>
               <td>
                 {data.enacted?.republican || 0} Republicans
                 <br />
@@ -47,7 +47,7 @@ const PlanComparison = ({ title, selectedStateAbbr, SMDMMD }) => {
               </td>
             </tr>
             <tr>
-              <td className="table_stateInfo_col1">
+              <td className="table-first-col">
                 Opportunity
                 <br />
                 Representatives
@@ -62,10 +62,14 @@ const PlanComparison = ({ title, selectedStateAbbr, SMDMMD }) => {
               </td>
             </tr>
             <tr>
-              <td className="table_stateInfo_col1">Seats-Votes Curve</td>
+              <td className="table-first-col">
+                Seats-Votes
+                <br />
+                Curve
+              </td>
               <td>
                 <div
-                  className="item_plot_Ensemble"
+                  className="info-visualization-container"
                   style={{ width: "100%", height: 330 }}
                 >
                   <SeatVoteCurve data={data.enacted?.seatsVotes || []} />
@@ -73,7 +77,7 @@ const PlanComparison = ({ title, selectedStateAbbr, SMDMMD }) => {
               </td>
               <td>
                 <div
-                  className="item_plot_Ensemble"
+                  className="info-visualization-container"
                   style={{ width: "100%", height: 330 }}
                 >
                   <SeatVoteCurve data={data.averageMmd?.seatsVotes || []} />

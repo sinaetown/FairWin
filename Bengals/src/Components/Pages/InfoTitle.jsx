@@ -4,7 +4,7 @@ import LeftArrowIcon from "../../assets/left-arrow-icon.svg";
 import RightArrowIcon from "../../assets/right-arrow-icon.svg";
 
 const InfoTitle = ({ title, activePage, onPageChange }) => (
-  <div className="info_title">
+  <div className="info-title">
     <Button onClick={() => onPageChange(!activePage)} variant="link">
       <img alt="" src={LeftArrowIcon} width="30" height="30" />
     </Button>

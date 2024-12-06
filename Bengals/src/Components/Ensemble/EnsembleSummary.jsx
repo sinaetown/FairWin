@@ -5,14 +5,14 @@ import SeatVoteCurveInfo from "../Pages/SeatVoteCurveInfo";
 import LeftArrowIcon from "../../assets/left-arrow-icon.svg";
 import RightArrowIcon from "../../assets/right-arrow-icon.svg";
 
-const EnsembleSummary = ({ title, SMDMMD, selectedStateAbbr }) => {
+const EnsembleSummary = ({ title, smdmmd, selectedStateAbbr }) => {
   const [activePage, setActivePage] = useState(true);
   const [data, setData] = useState({});
 
   useEffect(() => {
     setData({ averagePartySplit: {} });
     const getData = async () => {
-      const api = `/${selectedStateAbbr.toUpperCase()}/ensemble-summary/${SMDMMD}`;
+      const api = `/${selectedStateAbbr.toUpperCase()}/ensemble-summary/${smdmmd}`;
       try {
         const response = await axios.get(`http://localhost:8080${api}`);
         setData(response.data);
@@ -21,12 +21,16 @@ const EnsembleSummary = ({ title, SMDMMD, selectedStateAbbr }) => {
       }
     };
     getData();
-  }, [selectedStateAbbr, SMDMMD]);
+  }, [selectedStateAbbr, smdmmd]);
+
   const infoItems = [
     {
       title: "Number of District Plans",
       values: [
-        { value: data.numDistrictPlan || 0, suffix: "plans in ensemble" },
+        {
+          value: data.numDistrictPlan?.toLocaleString() || 0,
+          suffix: "plans in ensemble",
+        },
       ],
     },
     {
@@ -56,10 +60,11 @@ const EnsembleSummary = ({ title, SMDMMD, selectedStateAbbr }) => {
       ],
     },
   ];
+
   return (
     <Row>
       <Row>
-        <div className="info_title">
+        <div className="info-title">
           <Button onClick={() => setActivePage(!activePage)} variant="link">
             <img alt="" src={LeftArrowIcon} width="30" height="30" />
           </Button>
@@ -69,13 +74,13 @@ const EnsembleSummary = ({ title, SMDMMD, selectedStateAbbr }) => {
           </Button>
         </div>
         {activePage && (
-          <Row className="info_grid">
+          <Row className="info-grid">
             {infoItems.map((item, index) => (
-              <Col key={index} className="info_item">
-                <div className="info_subTitle">{item.title}</div>
+              <Col key={index} className="info-item">
+                <div className="info-subtitle">{item.title}</div>
                 {item.values.map((val, idx) => (
                   <div key={idx}>
-                    <span className="info_data">{val.value}</span> {val.suffix}
+                    <span className="info-data">{val.value}</span> {val.suffix}
                   </div>
                 ))}
               </Col>

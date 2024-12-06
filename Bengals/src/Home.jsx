@@ -16,35 +16,36 @@ const Home = () => {
   const toSateInfo = (state) => {
     navigate(`/${state}`);
   };
+
   return (
     <>
       <div className="body">
         <SideBar show={showSideBar} handleClose={() => setShowSideBar(false)} />
-        <div className="body_home">
+        <div className="body-home">
           <Brand />
           <Container>
-            <div className="text_question">IS A FAIR VOTE BEING HELD?</div>
-            <div className="text_selectedState">
+            <div className="text-question">IS A FAIR VOTE BEING HELD?</div>
+            <div className="text-selected-state">
               {hoveredLocation ? hoveredLocation : selectedState}
             </div>
             <Row>
               <Col xs={1}>
-                <div className="dataExplaination">
-                  <span className="text_Available_State">
+                <div className="available-state-container">
+                  <span className="text-available-state">
                     {" "}
                     <img
                       alt=""
                       src={CircleIcon}
                       width="10px"
                       height="10px"
-                      className="svgIcon"
+                      className="svg-icon"
                     />
                     &nbsp;Available State
                   </span>
                 </div>
               </Col>
               <Col xs={9}>
-                <Container className="map_us">
+                <Container className="us-map">
                   <USMap
                     hoveredLocation={hoveredLocation}
                     selectedState={selectedState}
@@ -55,7 +56,7 @@ const Home = () => {
                 </Container>
               </Col>
               <Col xs={2}>
-                <Dropdown className="button_toAnalysis">
+                <Dropdown className="button-dropdown">
                   <Dropdown.Toggle variant="dark">
                     Select a State
                   </Dropdown.Toggle>

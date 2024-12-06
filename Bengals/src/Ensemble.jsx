@@ -18,26 +18,26 @@ const Ensemble = () => {
   const abbreviation = { ms: "MISSISSIPPI", al: "ALABAMA", pa: "PENNSYLVANIA" };
   const { id: selectedStateAbbr } = useParams();
   const location = useLocation().pathname;
-  const SMDMMD = location.split("/")[3];
+  const smdmmd = location.split("/")[3];
   const selectedState = abbreviation[selectedStateAbbr];
   const [showSideBar, setShowSideBar] = useState(false);
   const [geoFeature, setGeoFeature] = useState([]);
-  const [showRacialGraph1, setShowRacialGraph1] = useState("black");
-  const [showRacialGraph2, setShowRacialGraph2] = useState("black");
+  const [showRacialPopulationGraph, setShowRacialPopulationGraph] =
+    useState("black");
+  const [showOpportunityDistrictGraph, setShowOpportunityDistrictGraph] =
+    useState("black");
   const [showPartyGraph, setShowPartyGraph] = useState("republican");
   const [showContent, setShowContent] = useState("Ensemble Summary");
   const [mapKey, setMapKey] = useState(0);
 
   useEffect(() => {
-    const initValue = () => {
-      setGeoFeature([]);
-    };
     const getMap = async () => {
       const api_sampleMMDMap = `/${selectedStateAbbr.toUpperCase()}/sample-mmd-map`;
       const api_enactedMap = `/${selectedStateAbbr.toUpperCase()}/enacted-map`;
       let map;
+
       try {
-        if (SMDMMD == "smd") {
+        if (smdmmd == "smd") {
           map = await axios.get(`http://localhost:8080${api_enactedMap}`);
         } else {
           map = await axios.get(`http://localhost:8080${api_sampleMMDMap}`);
@@ -48,20 +48,24 @@ const Ensemble = () => {
         console.error("Error fetching data:", error);
       }
     };
-    initValue();
+
+    setGeoFeature([]);
     getMap();
-  }, [selectedStateAbbr, SMDMMD]);
+  }, [selectedStateAbbr, smdmmd]);
+
+  useEffect(() => {
+    setShowRacialPopulationGraph("black");
+    setShowOpportunityDistrictGraph("black");
+    setShowPartyGraph("republican");
+  }, [showContent]);
 
   return (
     <>
       <div className="body">
         <SideBar show={showSideBar} handleClose={() => setShowSideBar(false)} />
-        <Brand
-          title={selectedState}
-          className={"text_selectedState_Analysis"}
-        />
-        <div className="body_analysis">
-          {SMDMMD == "smd" && (
+        <Brand title={selectedState} className={"text-brand"} />
+        <div className="body-contents">
+          {smdmmd == "smd" && (
             <NavBar
               setShowContent={setShowContent}
               simpleItem={["Ensemble Summary"]}
@@ -75,12 +79,15 @@ const Ensemble = () => {
                 },
                 {
                   title: "Party Data",
-                  items: ["Distribution of Party Population", "Party Splits"],
+                  items: [
+                    "Distribution of Party Population",
+                    "Distribution of Party Splits",
+                  ],
                 },
               ]}
             />
           )}
-          {SMDMMD == "mmd" && (
+          {smdmmd == "mmd" && (
             <NavBar
               setShowContent={setShowContent}
               simpleItem={[
@@ -97,26 +104,29 @@ const Ensemble = () => {
                 },
                 {
                   title: "Party Data",
-                  items: ["Distribution of Party Population", "Party Splits"],
+                  items: [
+                    "Distribution of Party Population",
+                    "Distribution of Party Splits",
+                  ],
                 },
               ]}
             />
           )}
-          <Row className="contents_Random">
-            <Col xs={12} md={6} className="col_stateInformation">
-              {SMDMMD == "smd" && (
+          <Row className="map-contents-row">
+            <Col xs={12} md={6} className="map-contents-col">
+              {smdmmd == "smd" && (
                 <DistrictMapTitle
                   title={"Enacted Plan"}
                   address={`/${selectedStateAbbr}`}
                 />
               )}
-              {SMDMMD == "mmd" && (
+              {smdmmd == "mmd" && (
                 <DistrictMapTitle
                   title={"Sample MMD Plan"}
                   address={`/${selectedStateAbbr}`}
                 />
               )}
-              <Row className="item_plot_Random">
+              <Row className="district-map-container">
                 <DistrictMap
                   mapKey={mapKey}
                   data={geoFeature}
@@ -124,31 +134,31 @@ const Ensemble = () => {
                 />
               </Row>
             </Col>
-            <Col className="col_districtInformation_Random">
+            <Col className="info-contents-col">
               {showContent === "Ensemble Summary" && (
                 <EnsembleSummary
-                  title={`${SMDMMD.toLocaleUpperCase()} Ensemble Summary`}
-                  SMDMMD={SMDMMD}
+                  title={`${smdmmd.toLocaleUpperCase()} Ensemble Summary`}
+                  smdmmd={smdmmd}
                   selectedStateAbbr={selectedStateAbbr}
                 />
               )}
               {showContent === "Distribution of Racial Population" && (
                 <RacialDistribution
                   title={"Distribution of Racial Population"}
-                  showGraph={showRacialGraph1}
-                  setShowGraph={setShowRacialGraph1}
+                  showGraph={showRacialPopulationGraph}
+                  setShowGraph={setShowRacialPopulationGraph}
                   navbarItem={["African American", "Asian", "Hispanic"]}
-                  SMDMMD={SMDMMD}
+                  smdmmd={smdmmd}
                   selectedStateAbbr={selectedStateAbbr}
                 />
               )}
               {showContent === "Opportunity Districts & Representatives" && (
                 <OpportunityDistribution
                   title={"Opportunity Districts & Representatives"}
-                  showGraph={showRacialGraph2}
-                  setShowGraph={setShowRacialGraph2}
+                  showGraph={showOpportunityDistrictGraph}
+                  setShowGraph={setShowOpportunityDistrictGraph}
                   navbarItem={["African American", "Asian", "Hispanic"]}
-                  SMDMMD={SMDMMD}
+                  smdmmd={smdmmd}
                   selectedStateAbbr={selectedStateAbbr}
                 />
               )}
@@ -158,21 +168,21 @@ const Ensemble = () => {
                   showGraph={showPartyGraph}
                   setShowGraph={setShowPartyGraph}
                   navbarItem={["Republican", "Democratic"]}
-                  SMDMMD={SMDMMD}
+                  smdmmd={smdmmd}
                   selectedStateAbbr={selectedStateAbbr}
                 />
               )}
-              {showContent === "Party Splits" && (
+              {showContent === "Distribution of Party Splits" && (
                 <PartySplitsDistribution
                   title={"Distribution of Party Splits"}
-                  SMDMMD={SMDMMD}
+                  smdmmd={smdmmd}
                   selectedStateAbbr={selectedStateAbbr}
                 />
               )}
               {showContent === "Enacted Plan vs Average MMD Plans" && (
                 <PlanComparison
                   title={"Enacted Plan vs Average MMD Plans"}
-                  SMDMMD={SMDMMD}
+                  smdmmd={smdmmd}
                   selectedStateAbbr={selectedStateAbbr}
                 />
               )}

@@ -4,12 +4,12 @@ import BackButton from "../UI/BackButton";
 
 const DistrictMapTitle = ({ title, address }) => {
   return (
-    <Row className="item_contents_Random">
+    <Row className="info-contents-row">
       <Col xs={1}>
         <BackButton address={address} />
       </Col>
       <Col xs={11}>
-        <div className="text_contentsTitle_Analysis">{title}</div>
+        <div className="text-district-map-title">{title}</div>
       </Col>
     </Row>
   );

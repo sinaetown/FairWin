@@ -4,28 +4,22 @@ import { Table } from "react-bootstrap";
 const RandomPlanTable = ({ data }) => {
   const tableData = [
     {
-      field: "Total Population",
-      value: `${(data?.totalPopulation || 0).toLocaleString()} People`,
-    },
-    {
-      field: "Voting Population",
-      value: `${(data?.votePopulation || 0).toLocaleString()} People`,
-    },
-    {
-      field: "Total White",
-      value: `${(data?.totalWhite || 0).toLocaleString()} People`,
-    },
-    {
-      field: "Total African American",
-      value: `${(data?.totalBlack || 0).toLocaleString()} People`,
-    },
-    {
-      field: "Total Asian",
-      value: `${(data?.totalAsian || 0).toLocaleString()} People`,
-    },
-    {
-      field: "Total Hispanic",
-      value: `${(data?.totalHispanic || 0).toLocaleString()} People`,
+      field: "Population",
+      value: (
+        <>
+          Total Population: {(data?.totalPopulation || 0).toLocaleString()}
+          <br />
+          Voting Population: {(data?.votePopulation || 0).toLocaleString()}
+          <br />
+          Total White: {(data?.totalWhite || 0).toLocaleString()}
+          <br />
+          Total African American: {(data?.totalBlack || 0).toLocaleString()}
+          <br />
+          Total Asian: {(data?.totalAsian || 0).toLocaleString()}
+          <br />
+          Total Hispanic: {(data?.totalHispanic || 0).toLocaleString()}
+        </>
+      ),
     },
     {
       field: "Party Splits",
@@ -64,7 +58,7 @@ const RandomPlanTable = ({ data }) => {
 
   return (
     <Table striped bordered hover>
-      <thead className="table_th">
+      <thead className="table-header">
         <tr>
           <td>Fields</td>
           <td>Values</td>
@@ -73,14 +67,14 @@ const RandomPlanTable = ({ data }) => {
       <tbody>
         {tableData.map((row, index) => (
           <tr key={index}>
-            <td className="table_stateInfo_col1">{row.field}</td>
+            <td className="table-first-col">{row.field}</td>
             <td>{row.value}</td>
           </tr>
         ))}
         {data?.opportunityThreshold !== undefined &&
           data?.opportunityThreshold !== 0 && (
             <tr>
-              <td className="table_stateInfo_col1">
+              <td className="table-first-col">
                 Threshold Used For Opportunity Districts
               </td>
               <td>{`${data?.opportunityThreshold}`}</td>

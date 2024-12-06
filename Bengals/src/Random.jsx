@@ -16,7 +16,7 @@ const Random = () => {
   const [showSideBar, setShowSideBar] = useState(false);
   const [geoFeature, setGeoFeature] = useState([]);
   const location = useLocation().pathname;
-  const SMDMMD = location.split("/")[3];
+  const smdmmd = location.split("/")[3];
   const [showContent, setShowContent] = useState("Highest Republican Split");
   const [mapKey, setMapKey] = useState(0);
   const randomPlans = [
@@ -40,7 +40,7 @@ const Random = () => {
     const getData = async () => {
       const api = `/${selectedStateAbbr.toUpperCase()}/random-plan/${
         apis[showContent]
-      }/${SMDMMD}`;
+      }/${smdmmd}`;
       try {
         const response = await axios.get(`http://localhost:8080${api}`);
         setData(response.data);
@@ -51,25 +51,22 @@ const Random = () => {
       }
     };
     getData();
-  }, [selectedStateAbbr, SMDMMD, showContent]);
+  }, [selectedStateAbbr, smdmmd, showContent]);
 
   return (
     <>
       <div className="body">
         <SideBar show={showSideBar} handleClose={() => setShowSideBar(false)} />
-        <Brand
-          title={selectedState}
-          className={"text_selectedState_Analysis"}
-        />
-        <div className="body_analysis">
+        <Brand title={selectedState} className={"text-brand"} />
+        <div className="body-contents">
           <NavBar setShowContent={setShowContent} simpleItem={randomPlans} />
-          <Row className="contents_Random">
-            <Col xs={12} md={6} className="col_stateInformation">
+          <Row className="map-contents-row">
+            <Col xs={12} md={6} className="map-contents-col">
               <DistrictMapTitle
-                title={"Sample " + SMDMMD.toUpperCase() + " Plan"}
+                title={"Sample " + smdmmd.toUpperCase() + " Plan"}
                 address={`/${selectedStateAbbr}`}
               />
-              <Row className="item_plot_Random">
+              <Row className="district-map-container">
                 <DistrictMap
                   mapKey={mapKey}
                   data={geoFeature}
@@ -77,11 +74,11 @@ const Random = () => {
                 />
               </Row>
             </Col>
-            <Col className="col_districtInformation_Random">
+            <Col className="info-contents-col">
               {randomPlans
                 .filter((item) => showContent === item)
                 .map((item) => (
-                  <Row key={item} className="item_contents_Random">
+                  <Row key={item} className="info-contents-row">
                     <RandomPlanContents title={item} data={data} />
                   </Row>
                 ))}

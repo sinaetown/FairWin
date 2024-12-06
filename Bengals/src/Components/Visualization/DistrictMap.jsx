@@ -21,18 +21,20 @@ const DistrictMap = ({ selectedState, mapKey, data }) => {
       fillColor: "rgb(220, 25, 10)",
     };
     const styleHover = {
-      fillColor: "rgb(40, 38, 38)",
+      fillColor: "rgb(120, 115, 115)",
     };
+
     const onMouseOver = () => {
       layer.setStyle(styleHover);
       const label = L.divIcon({
         className: "district-label",
         html: properties.districtNumber
-          ? `<div style="font-size: 20px; color: black;">${properties.districtNumber}</div>`
+          ? `<div style="font-size: 25px; color: black;">${properties.districtNumber}</div>`
           : "",
       });
       layer._labelMarker = L.marker(latLng, { icon: label }).addTo(layer._map);
     };
+
     const onMouseOut = () => {
       layer.setStyle(styleDefault);
       if (layer._labelMarker) {
@@ -41,7 +43,7 @@ const DistrictMap = ({ selectedState, mapKey, data }) => {
       }
     };
 
-    layer.bindPopup(`
+    const generatePopupContent = (properties) => `
       <div style="font-size: 16px; width: 300px; word-wrap: break-word;">
         <b>Total Population:</b> ${
           properties.totalPopulation?.toLocaleString() || 0
@@ -68,8 +70,9 @@ const DistrictMap = ({ selectedState, mapKey, data }) => {
             : ""
         }
       </div>
-    `);
+    `;
 
+    layer.bindPopup(generatePopupContent(properties));
     layer.setStyle(styleDefault);
     layer.on({
       mouseover: onMouseOver,
@@ -78,14 +81,14 @@ const DistrictMap = ({ selectedState, mapKey, data }) => {
   };
 
   return (
-    <div className="districtMap">
+    <div className="district-map">
       <MapContainer
         key={mapKey}
         center={coordinate}
         zoom={6.5}
         zoomControl
         scrollWheelZoom={false}
-        className="map_district"
+        className="map-container"
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
