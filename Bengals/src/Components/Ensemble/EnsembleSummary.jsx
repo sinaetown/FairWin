@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Row, Col, Button } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import SeatVoteCurveInfo from "../Pages/SeatVoteCurveInfo";
-import LeftArrowIcon from "../../assets/left-arrow-icon.svg";
-import RightArrowIcon from "../../assets/right-arrow-icon.svg";
+import InfoTitle from "../Pages/InfoTitle";
 
 const EnsembleSummary = ({ title, smdmmd, selectedStateAbbr }) => {
   const [activePage, setActivePage] = useState(true);
@@ -59,21 +58,32 @@ const EnsembleSummary = ({ title, smdmmd, selectedStateAbbr }) => {
         },
       ],
     },
+    ...(smdmmd === "mmd"
+      ? [
+          {
+            title: "MMD Layout",
+            values: [
+              {
+                value: Array.isArray(data.layout)
+                  ? data.layout.map((x) => `${x}`).join(", ") || 0
+                  : "",
+                suffix: "member districts",
+              },
+            ],
+          },
+        ]
+      : []),
   ];
 
   return (
     <Row>
-      <Row>
-        <div className="info-title">
-          <Button onClick={() => setActivePage(!activePage)} variant="link">
-            <img alt="" src={LeftArrowIcon} width="30" height="30" />
-          </Button>
-          {title}
-          <Button onClick={() => setActivePage(!activePage)} variant="link">
-            <img alt="" src={RightArrowIcon} width="30" height="30" />
-          </Button>
-        </div>
-        {activePage && (
+      {activePage && (
+        <Row>
+          <InfoTitle
+            title={title}
+            activePage={activePage}
+            onPageChange={setActivePage}
+          />
           <Row className="info-grid">
             {infoItems.map((item, index) => (
               <Col key={index} className="info-item">
@@ -86,16 +96,23 @@ const EnsembleSummary = ({ title, smdmmd, selectedStateAbbr }) => {
               </Col>
             ))}
           </Row>
-        )}
-        {!activePage && (
+        </Row>
+      )}
+      {!activePage && (
+        <Row>
+          <InfoTitle
+            title="Seats-Votes Curve"
+            activePage={activePage}
+            onPageChange={setActivePage}
+          />
           <SeatVoteCurveInfo
             seatVoteCurveData={data.seatsVotes || []}
             bias={data.bias || 0}
             symmetry={data.symmetry || 0}
             responsiveness={data.responsiveness || 0}
           />
-        )}
-      </Row>
+        </Row>
+      )}
     </Row>
   );
 };

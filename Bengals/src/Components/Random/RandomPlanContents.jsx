@@ -9,22 +9,31 @@ const RandomPlanContents = ({ title, data }) => {
 
   return (
     <Row>
-      <Row>
-        <InfoTitle
-          title={title}
-          activePage={activePage}
-          onPageChange={setActivePage}
-        />
-        {activePage === true && <RandomPlanTable data={data || {}} />}
-        {activePage === false && (
+      {activePage === true && (
+        <Row>
+          <InfoTitle
+            title={title}
+            activePage={activePage}
+            onPageChange={setActivePage}
+          />
+          <RandomPlanTable data={data || {}} />
+        </Row>
+      )}
+      {activePage === false && (
+        <Row>
+          <InfoTitle
+            title="Seats-Votes Curve"
+            activePage={activePage}
+            onPageChange={setActivePage}
+          />
           <SeatVoteCurveInfo
             seatVoteCurveData={data.seatsVotes || []}
             bias={data.bias || 0}
             symmetry={data.symmetry || 0}
             responsiveness={data.responsiveness || 0}
           />
-        )}
-      </Row>
+        </Row>
+      )}
     </Row>
   );
 };

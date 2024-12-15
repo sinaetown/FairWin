@@ -10,7 +10,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-const SimpleBarChart = ({ keyName, data }) => {
+const SimpleBarChart = ({ title, keyName, data }) => {
   const changeIdName = (name) => {
     return name
       .replace(/([a-z])([A-Z])/g, "$1 $2")
@@ -19,11 +19,7 @@ const SimpleBarChart = ({ keyName, data }) => {
 
   return (
     <div style={{ width: "100%", height: "100%" }}>
-      {keyName.toLowerCase().includes("opportunity") && (
-        <h5 className="bar-chart-title">
-          {changeIdName(keyName).replace(/num/g, "")}
-        </h5>
-      )}
+      {title && <h5 className="bar-chart-title">{title}</h5>}
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={data}
@@ -31,7 +27,7 @@ const SimpleBarChart = ({ keyName, data }) => {
             top: 20,
             right: 35,
             left: 15,
-            bottom: keyName.toLowerCase().includes("opportunity") ? 30 : 5,
+            bottom: title ? 30 : 5,
           }}
         >
           <CartesianGrid strokeDasharray="3 3" />

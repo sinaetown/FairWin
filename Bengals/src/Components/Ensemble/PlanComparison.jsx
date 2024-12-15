@@ -29,7 +29,7 @@ const PlanComparison = ({ title, selectedStateAbbr, smdmmd }) => {
             <tr>
               <td></td>
               <td>Enacted Plan</td>
-              <td>Average MMD Plans</td>
+              <td>Average MMD Plan</td>
             </tr>
           </thead>
           <tbody>

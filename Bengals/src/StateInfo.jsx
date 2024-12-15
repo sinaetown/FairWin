@@ -121,7 +121,7 @@ const StateInfo = () => {
           <NavBar navigateItem={apis} />
           <Row className="map-contents-row">
             <Col xs={12} md={6} className="map-contents-col">
-              <DistrictMapTitle title={"Enacted Plan"} address={`/`} />
+              <DistrictMapTitle title={"Enacted SMD Plan"} address={`/`} />
               <Row className="district-map-container">
                 <DistrictMap
                   mapKey={mapKey}

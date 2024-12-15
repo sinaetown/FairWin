@@ -29,7 +29,8 @@ const PartySplitsDistribution = ({ title, selectedStateAbbr, smdmmd }) => {
           style={{ width: "100%", height: 330 }}
         >
           <SimpleBarChart
-            keyName={"numDistricts"}
+            title="Republican : Democratic"
+            keyName={"numberOfPlans"}
             data={data.partySplitsBar || []}
           />
         </Col>

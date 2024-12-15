@@ -92,7 +92,7 @@ const Ensemble = () => {
               setShowContent={setShowContent}
               simpleItem={[
                 "Ensemble Summary",
-                "Enacted Plan vs Average MMD Plans",
+                "Enacted Plan vs Average MMD Plan",
               ]}
               dropDown={[
                 {
@@ -116,13 +116,13 @@ const Ensemble = () => {
             <Col xs={12} md={6} className="map-contents-col">
               {smdmmd == "smd" && (
                 <DistrictMapTitle
-                  title={"Enacted Plan"}
+                  title={"Enacted SMD Plan"}
                   address={`/${selectedStateAbbr}`}
                 />
               )}
               {smdmmd == "mmd" && (
                 <DistrictMapTitle
-                  title={"Sample MMD Plan"}
+                  title={"Average MMD Plan"}
                   address={`/${selectedStateAbbr}`}
                 />
               )}
@@ -179,9 +179,9 @@ const Ensemble = () => {
                   selectedStateAbbr={selectedStateAbbr}
                 />
               )}
-              {showContent === "Enacted Plan vs Average MMD Plans" && (
+              {showContent === "Enacted Plan vs Average MMD Plan" && (
                 <PlanComparison
-                  title={"Enacted Plan vs Average MMD Plans"}
+                  title={"Enacted Plan vs Average MMD Plan"}
                   smdmmd={smdmmd}
                   selectedStateAbbr={selectedStateAbbr}
                 />

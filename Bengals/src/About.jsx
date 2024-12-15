@@ -23,14 +23,14 @@ const About = () => {
                 <h1 className="text-about-title">Precinct Data</h1>
                 <h4>Geographical Information</h4>
                 <p>
-                  <b>Alabama</b>: U.S. Department of Commerce, U.S. Census
+                  <h5>Alabama</h5> U.S. Department of Commerce, U.S. Census
                   Bureau, Geography Division, Spatial Data Collection, and
                   Products Branch “TIGER/Line Shapefile, Current, State,
                   Alabama, 2020 Census Voting District (VTD).” October 28, 2022.
                   https://catalog.data.gov/dataset/tiger-line-shapefile-current-state-alabama-2020-census-voting-district-vtd
                 </p>
                 <p>
-                  <b>Mississippi</b>: U.S. Department of Commerce, U.S. Census
+                  <h5>Mississippi</h5> U.S. Department of Commerce, U.S. Census
                   Bureau, Geography Division, Spatial Data Collection and
                   Products Branch “TIGER/Line Shapefile, Current, State,
                   Mississippi 2020 Census Voting District (VTD).” October 28,
@@ -38,13 +38,14 @@ const About = () => {
                   https://catalog.data.gov/dataset/tiger-line-shapefile-current-state-mississippi-2020-census-voting-district-vtd
                 </p>
                 <p>
-                  <b>Pennsylvania</b>: U.S. Department of Commerce, U.S. Census
+                  <h5>Pennsylvania</h5> U.S. Department of Commerce, U.S. Census
                   Bureau, Geography Division, Spatial Data Collection, and
                   Products Branch “TIGER/Line Shapefile, Current, State,
                   Pennsylvania, 2020 Census Voting District (VTD).” October 28,
                   2022.
                   https://catalog.data.gov/dataset/tiger-line-shapefile-current-state-pennsylvania-2020-census-voting-district-vtd
                 </p>
+                <br />
                 <h4>Demographic Information</h4>
                 <p>
                   T. Kenny, Christopher, and Cory McCartan. 2021. “2020
@@ -88,8 +89,8 @@ const About = () => {
                   result when applied to such a rule.
                 </p>
                 <p>
-                  <b>Recom Algorithm</b>: Recom is a graph algorithm intended to
-                  create a new representation of the graphs by moving a node
+                  <h4>Recom Algorithm</h4> Recom is a graph algorithm intended
+                  to create a new representation of the graphs by moving a node
                   inside a subgraph to another subgraph. However, constraints
                   prevent the algorithm from generating graphs that are not
                   consistent with the original graph. Under such constraints,
@@ -97,7 +98,7 @@ const About = () => {
                   returns a new graph with changed node compositions.
                 </p>
                 <p>
-                  <b>Gluing Algorithm</b>: To create an MMD plan, we need to
+                  <h4>Gluing Algorithm</h4> To create an MMD plan, we need to
                   “group” the districts created from the SMD plan according to
                   the set number of districts calculated by the rules provided
                   under FRA. The gluing algorithm ensures that the created group
@@ -105,7 +106,7 @@ const About = () => {
                   geographically apart.
                 </p>
                 <p>
-                  <b>MMD Election Algorithm</b>: Unlike the SMD plan, MMD
+                  <h4>MMD Election Algorithm</h4> Unlike the SMD plan, MMD
                   requires to have multiple candidates inside each district,
                   requiring a distinct election method. The algorithm provides a
                   “Ballot” to each voter where the voters need to submit the

@@ -25,11 +25,21 @@ const CustomTooltip = ({ active, payload, label }) => {
           padding: "10px",
         }}
       >
-        <p>{`${label}`}</p>
-        <p>{`Median: ${data.median}`}</p>
-        <p style={{ color: "blue" }}>{`Average: ${data.average}`}</p>
+        <p className="text-tool-tip">{`${label}`}</p>
+        <p className="text-tool-tip">{`Max: ${data.max}`}</p>
+        <p className="text-tool-tip">{`Upper Quartile: ${data.upperQuartile}`}</p>
+        <p className="text-tool-tip">{`Median: ${data.median}`}</p>
+        <p className="text-tool-tip">{`Lower Quartile: ${data.lowerQuartile}`}</p>
+        <p className="text-tool-tip">{`Min: ${data.min}`}</p>
+        <p
+          className="text-tool-tip"
+          style={{ color: "blue" }}
+        >{`Average: ${data.average}`}</p>
         {data.enacted !== undefined && data.enacted !== null && (
-          <p style={{ color: "red" }}>{`Enacted: ${data.enacted}`}</p>
+          <p
+            className="text-tool-tip"
+            style={{ color: "red" }}
+          >{`Enacted: ${data.enacted}`}</p>
         )}
       </div>
     );
@@ -48,6 +58,9 @@ const BoxWhisker = ({ data, option }) => {
         bottomBox: v.median - v.lowerQuartile,
         topBox: v.upperQuartile - v.median,
         topWhisker: v.max - v.upperQuartile,
+        lowerQuartile: v.lowerQuartile,
+        upperQuartile: v.upperQuartile,
+        max: v.max,
         average: v.average,
         enacted: option === "smd" ? v.enacted : undefined,
         size: 250,
@@ -72,7 +85,12 @@ const BoxWhisker = ({ data, option }) => {
 
   const legendPayload = () => {
     let baseLegend = [
-      { value: "Box", type: "rect", id: "bottomBox", color: "#8884d8" },
+      {
+        value: "1st-3rd Quartile Range",
+        type: "rect",
+        id: "bottomBox",
+        color: "#8884d8",
+      },
     ];
     if (option === "smd") {
       baseLegend.push({
