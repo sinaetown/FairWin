@@ -35,22 +35,22 @@ const RandomPlanTable = ({ data }) => {
       field: "White & Non-White Probability",
       value: (
         <>
-          {data?.whiteRatio || 0} White
+          {data?.whiteProbability || 0}% White
           <br />
-          {data?.nonWhiteRatio || 0} Non-white
+          {data?.nonWhiteProbability || 0}% Non-white
         </>
       ),
     },
     {
       field: "Number of Opportunity Districts",
       value: `${data?.numOpportunityDistricts || 0} out of ${
-        (data?.republican || 0) + (data?.democratic || 0)
+        data?.totalDistricts || 0
       } Districts`,
     },
     {
       field: "Number of Safe Districts",
       value: `${data?.numSafeDistricts || 0} out of ${
-        (data?.republican || 0) + (data?.democratic || 0)
+        data?.totalDistricts || 0
       } Districts`,
     },
     { field: "Election Data Source", value: "2020 Presidential Election" },

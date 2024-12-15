@@ -40,8 +40,9 @@ const OpportunityDistribution = ({
           style={{ width: "100%", height: 330 }}
         >
           <SimpleBarChart
+            title="Opportunity Districts"
             data={data.opportunityDistrictsBar?.[showGraph] || []}
-            keyName="numOpportunityDistricts"
+            keyName="numberOfPlans"
           />
         </Col>
         <Col
@@ -49,8 +50,9 @@ const OpportunityDistribution = ({
           style={{ width: "100%", height: 330 }}
         >
           <SimpleBarChart
+            title="Opportunity Representatives"
             data={data.opportunityRepresentativesBar?.[showGraph] || []}
-            keyName="numOpportunityRepresentatives"
+            keyName="numberOfPlans"
           />
         </Col>
       </Row>

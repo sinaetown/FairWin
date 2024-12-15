@@ -17,18 +17,18 @@ const Random = () => {
   const [geoFeature, setGeoFeature] = useState([]);
   const location = useLocation().pathname;
   const smdmmd = location.split("/")[3];
-  const [showContent, setShowContent] = useState("Highest Republican Split");
+  const [showContent, setShowContent] = useState("Highest Republican Seats");
   const [mapKey, setMapKey] = useState(0);
   const randomPlans = [
-    "Highest Republican Split",
-    "Highest Democratic Split",
+    "Highest Republican Seats",
+    "Highest Democratic Seats",
     "Highest Non-White Probability",
     "Highest White Probability",
     "Highest Opportunity District",
   ];
   const apis = {
-    "Highest Republican Split": "republican",
-    "Highest Democratic Split": "democratic",
+    "Highest Republican Seats": "republican",
+    "Highest Democratic Seats": "democratic",
     "Highest Non-White Probability": "non-white-max",
     "Highest White Probability": "white-max",
     "Highest Opportunity District": "opportunity-max",
@@ -63,7 +63,7 @@ const Random = () => {
           <Row className="map-contents-row">
             <Col xs={12} md={6} className="map-contents-col">
               <DistrictMapTitle
-                title={"Sample " + smdmmd.toUpperCase() + " Plan"}
+                title={"Sampled " + smdmmd.toUpperCase() + " Plan"}
                 address={`/${selectedStateAbbr}`}
               />
               <Row className="district-map-container">

@@ -10,7 +10,7 @@ const DotBar = ({ x, y, width, height }) => {
       x2={x + width / 2}
       y2={y}
       stroke="#000"
-      strokeWidth={5}
+      strokeWidth={2}
     />
   );
 };
