@@ -1,3 +1,5 @@
+<img width="1162" alt="스크린샷 2025-03-07 오전 2 08 19" src="https://github.com/user-attachments/assets/facac015-1dfc-4f4c-a7d5-e2dd97951a08" />
+
 # 🗺️ Redistricting Analysis Web Platform
 **미국 SMD(단일 선거구)와 MMD(다중 선거구) 기반 선거구 재조정(Redistricting) 분석 웹사이트**
 
