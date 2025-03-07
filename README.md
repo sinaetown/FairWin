@@ -4,12 +4,9 @@
 <img width="1162" alt="스크린샷 2025-03-07 오전 2 08 19" src="https://github.com/user-attachments/assets/facac015-1dfc-4f4c-a7d5-e2dd97951a08" />
 
 ## 📌 프로젝트 개요
-- 미국 선거구 재조정(Redistricting) 분석을 위한 웹 플랫폼으로, SMD(단일 선거구)와 MMD(다중 선거구) 방식을 비교하고 분석할 수 있도록 설계
-- 특히, 소수 인종(Opportunity Districts) 및 정치적 정당 분포(Republican vs Democratic)와 관련된 통계적 데이터를 제공하여 게리맨더링(Gerrymandering) 효과를 최소화하는 선거구 설계 지원
-
-<br>🔹 SMD vs MMD 비교 분석: 정치적 공정성을 평가하기 위한 다양한 데이터 시각화 제공
-<br>🔹 게리맨더링(Gerrymandering) 효과 분석: 특정 정당이 선거구를 조작할 가능성을 줄이기 위한 객관적 지표 제공
-<br>🔹 데이터 시뮬레이션: ReCom 알고리즘 및 Gluing 알고리즘을 활용하여 다양한 선거구 시뮬레이션 결과 생성
+- SMD vs MMD 비교 분석: 정치적 공정성을 평가하기 위한 다양한 데이터 시각화 제공
+- 게리맨더링(Gerrymandering) 효과 분석: 특정 정당이 선거구를 조작할 가능성을 줄이기 위한 객관적 지표 제공
+- 데이터 시뮬레이션: ReCom 알고리즘 및 Gluing 알고리즘을 활용 -> 다양한 선거구 시뮬레이션 결과 생성
 
 ## 🫂 팀원 및 역할
 ||이름|역할|담당업무|
@@ -33,8 +30,8 @@
 
 ### ✅ 데이터 시각화
 - 지도 인터페이스: 특정 주(State) 선택 후 선거구 정보 확인
-- 바 차트(Bar Chart): 선거구별 정당 점유율 및 소수 인종 비율 비교
-- 박스-위스커 플롯(Box-Whisker Plot): SMD 및 MMD 기반 선거구 분포 분석
+- Bar Chart: 선거구별 정당 점유율 및 소수 인종 비율 비교
+- Box-Whisker Plot: SMD 및 MMD 기반 선거구 분포 분석
 
 ## 📆 프로젝트 관리 및 협업 도구
 - Notion: 회의록, 데이터 정리, 피드백 관리
