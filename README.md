@@ -1,7 +1,6 @@
 # 🗺️ FairWin
 **미국 SMD(단일 선거구)와 MMD(다중 선거구) 기반 선거구 재조정(Redistricting) 분석 웹사이트**
-
-<img width="1162" alt="스크린샷 2025-03-07 오전 2 08 19" src="https://github.com/user-attachments/assets/facac015-1dfc-4f4c-a7d5-e2dd97951a08" />
+![FairWin Demo GIF](https://github.com/user-attachments/assets/ca5891eb-29d0-4928-9f0e-4b55337b2c76)
 
 ## 📌 프로젝트 개요
 - SMD vs MMD 비교 분석: 정치적 공정성을 평가하기 위한 다양한 데이터 시각화 제공
